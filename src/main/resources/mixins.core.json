@@ -1,8 +1,8 @@
 {
   "required": true,
   "minVersion": "0.8.5",
-  "package": "net.gensokyoreimagined.gensouhacks.core",
-  "plugin": "net.gensokyoreimagined.gensouhacks.plugins.CorePlugin",
+  "package": "net.gensokyoreimagined.nitori.core",
+  "plugin": "net.gensokyoreimagined.nitori.plugins.CorePlugin",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_17",
   "server": [

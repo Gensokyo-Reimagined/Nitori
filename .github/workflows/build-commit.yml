@@ -2,7 +2,7 @@
 # This makes use of caching for faster builds and uploads the resulting artifacts
 name: build-commit
 
-on: [ push ]
+on: [ push, workflow_dispatch ]
 
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-commit-
       - name: Build artifacts
-        run: ./gradlew build
+        run: ./gradlew clean :spotlessApply build
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:

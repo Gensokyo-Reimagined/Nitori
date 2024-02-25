@@ -3,6 +3,7 @@ plugins {
 
   id("com.github.johnrengelman.shadow")
   id("io.papermc.paperweight.userdev")
+  id("com.diffplug.spotless")
 }
 
 // Expose version catalog
@@ -35,5 +36,19 @@ tasks {
 
   build {
     dependsOn(reobfJar)
+  }
+}
+
+spotless {
+  format("misc") {
+    target(project.files("*.gradle.kts", "gradle.properties", "settings.gradle.kts", "gradle/libs.versions.toml"))
+
+    trimTrailingWhitespace()
+    indentWithSpaces(4)
+    endWithNewline()
+  }
+
+  java {
+    licenseHeaderFile("LICENSE_header.txt")
   }
 }

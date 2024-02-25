@@ -6,7 +6,7 @@ This plugin provides the following optimizations:
 - [x] Iterate entity trackers faster by using Int2ObjectLinkedOpenHashMap
 - [ ] Reduce constants allocations
 - [ ] Lithium mixins
-  - [ ] Fast util
+  - [x] Fast util
   - [ ] HashedReferenceList
   - [ ] CompactSineLUT
   - [ ] Fast retrieval

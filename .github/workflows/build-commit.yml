@@ -38,3 +38,10 @@ jobs:
         with:
           name: nitori-artifacts-${{ steps.ref.outputs.branch }}
           path: build/libs/*.jar
+      - name: Reposilite upload
+        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+        with:
+          arguments: publish
+        env:
+          USERNAME: ${{ secrets.ORG_GRADLE_PROJECT_GENSOREPOUSERNAME }}
+          TOKEN: ${{ secrets.ORG_GRADLE_PROJECT_GENSOREPOPASSWORD }}

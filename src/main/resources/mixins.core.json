@@ -10,6 +10,7 @@
     "MixinSpongeSIMD",
     "MixinAABB",
     "MixinDirection",
-    "MixinLevel"
+    "MixinLevel",
+    "MixinEntitySectionStorage"
   ]
 }

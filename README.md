@@ -7,9 +7,9 @@ This plugin provides the following optimizations:
 - [ ] Reduce constants allocations
 - [ ] Lithium mixins
   - [x] Fast util
-  - [ ] HashedReferenceList
+  - [x] HashedReferenceList
   - [ ] CompactSineLUT
-  - [ ] Fast retrieval
+  - [x] Fast retrieval
   - [ ] Cached hashcode
   - [ ] Store gamerules in fastutil hashmap
   - [ ] Precompute shape arrays

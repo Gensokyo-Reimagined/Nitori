@@ -9,6 +9,7 @@
     "ChunkMapMixin",
     "MixinSpongeSIMD",
     "MixinAABB",
-    "MixinDirection"
+    "MixinDirection",
+    "MixinLevel"
   ]
 }

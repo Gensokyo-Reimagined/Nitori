@@ -3,7 +3,7 @@ metadata.format.version = "1.1"
 [versions]
 
 jetbrains = "24.1.0"
-ignite = "1.0.0"
+ignite = "1.0.1"
 mixin = "0.8.5"
 mixinExtras = "0.3.5"
 paperweight = "1.5.11"

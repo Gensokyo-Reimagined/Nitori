@@ -1,5 +1,8 @@
+import io.github.redstonneur1256.gaw.AccessWidenerExtension
+
 plugins {
   `kotlin-dsl`
+  id("io.github.redstonneur1256.gradle-access-widener") version "0.3.1"
 }
 
 dependencies {
@@ -25,4 +28,8 @@ kotlin {
       }
     }
   }
+}
+
+configure<AccessWidenerExtension> {
+  paths = files("../src/main/resources/nitori.accesswidener")
 }

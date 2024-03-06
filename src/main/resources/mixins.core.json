@@ -12,6 +12,7 @@
     "MixinDirection",
     "MixinLevel",
     "MixinEntitySectionStorage",
-    "MixinMth"
+    "MixinMth",
+    "MixinBlock"
   ]
 }

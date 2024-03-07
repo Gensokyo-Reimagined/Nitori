@@ -116,6 +116,6 @@ public class MixinEntitySectionStorage<T extends EntityAccess> {
 
     @Invoker("getSection")
     private EntitySection<T> getSection(long pos) {
-        throw new AssertionError("Mixin failed to apply");
+        throw new AssertionError("Mixin failed to apply!");
     }
 }

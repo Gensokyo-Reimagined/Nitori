@@ -5,13 +5,14 @@ A performance mod that converts patches into mixins using the Ignite Framework f
 This plugin provides the following optimizations:
 - [x] Iterate entity trackers faster by using Int2ObjectLinkedOpenHashMap
 - [ ] Reduce constants allocations
+- [x] Entity Micro Optimizations
 - [ ] Lithium mixins
   - [x] Fast util
   - [x] HashedReferenceList
-  - [ ] CompactSineLUT
+  - [x] CompactSineLUT
   - [x] Fast retrieval
-  - [ ] Cached hashcode
-  - [ ] Store gamerules in fastutil hashmap
+  - [x] Cached hashcode
+  - [x] Store gamerules in fastutil hashmap
   - [ ] Precompute shape arrays
   - [ ] Collections.attributes
   - [ ] Collections.entity_by_type 
@@ -23,7 +24,7 @@ This plugin provides the following optimizations:
   - [ ] Lithium gen
   - [ ] Ai sensor secondary POI
   - [ ] World tick scheduler
-- [ ] Smarter statistics-ticking
+- [x] Smarter statistics-ticking
 - [ ] Async Pathfinding
 - [ ] Multithreaded Tracker
 

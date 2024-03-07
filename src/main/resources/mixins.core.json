@@ -14,6 +14,7 @@
     "MixinEntitySectionStorage",
     "MixinMth",
     "MixinBlock",
-    "MixinGameRules"
+    "MixinGameRules",
+    "MixinPlayer"
   ]
 }

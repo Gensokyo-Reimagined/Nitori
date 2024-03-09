@@ -29,3 +29,9 @@ This plugin provides the following optimizations:
 - [ ] Multithreaded Tracker
 
 **NOTE: This mod may or may not alter the default behaviors of some mob AI.**
+
+---
+
+<p align="center">
+  <img src="https://github.com/Gensokyo-Reimagined/Nitori/assets/67013996/7443c502-ca8e-4a30-8a3c-5bae28565e5d" width="75%">
+</p>

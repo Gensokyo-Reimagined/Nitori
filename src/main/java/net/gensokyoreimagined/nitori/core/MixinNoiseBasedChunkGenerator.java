@@ -14,36 +14,33 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.core;
 
-import com.google.common.collect.Lists;
-import net.gensokyoreimagined.nitori.common.util.collections.wcHashedReferenceList;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
+@Mixin(NoiseBasedChunkGenerator.class)
+public class MixinNoiseBasedChunkGenerator {
+    @Shadow @Final public Holder<NoiseGeneratorSettings> settings;
+    @Unique
+    private int gensouHacks$cachedSeaLevel;
 
-@Mixin(Level.class)
-public class MixinLevel {
-    // Implementation of 0006-lithium-HashedReferenceList.patch
-    @Mutable
-    @Final @Shadow
-    public List<TickingBlockEntity> blockEntityTickers;
+    @Inject(method = "<init>", at = @At("TAIL"))
+    public void constructor(BiomeSource biomeSource, Holder settings, CallbackInfo ci) {
+        this.gensouHacks$cachedSeaLevel = this.settings.value().seaLevel();
+    }
 
-    // Implementation of 0006-lithium-HashedReferenceList.patch
-    @Mutable
-    @Final @Shadow
-    private List<TickingBlockEntity> pendingBlockEntityTickers;
-
-    // Implementation of 0006-lithium-HashedReferenceList.patch
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(CallbackInfo ci) {
-        this.blockEntityTickers = new HashedReferenceList<>(Lists.newArrayList());
-        this.pendingBlockEntityTickers = new HashedReferenceList<>(Lists.newArrayList());
+    @Inject(method = "getSeaLevel", at = @At("HEAD"), cancellable = true)
+    public void getSeaLevel(CallbackInfoReturnable<Integer> cir) {
+        cir.setReturnValue(this.gensouHacks$cachedSeaLevel);
+        cir.cancel();
     }
 }

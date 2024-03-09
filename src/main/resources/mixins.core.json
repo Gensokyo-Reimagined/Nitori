@@ -17,6 +17,8 @@
     "MixinGameRules",
     "MixinPlayer",
     "MixinEntity",
-    "MixinMob"
+    "MixinMob",
+    "MixinWorldGenRegion",
+    "MixinNoiseBasedChunkGenerator"
   ]
 }

@@ -15,7 +15,7 @@
 package net.gensokyoreimagined.nitori.core;
 
 import com.google.common.collect.Lists;
-import net.gensokyoreimagined.nitori.common.util.collections.wcHashedReferenceList;
+import net.gensokyoreimagined.nitori.common.util.collections.HashedReferenceList;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import org.spongepowered.asm.mixin.Final;

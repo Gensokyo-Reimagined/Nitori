@@ -19,6 +19,7 @@
     "MixinEntity",
     "MixinMob",
     "MixinWorldGenRegion",
-    "MixinNoiseBasedChunkGenerator"
+    "MixinNoiseBasedChunkGenerator",
+    "MixinBlockPos"
   ]
 }

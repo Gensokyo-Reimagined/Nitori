@@ -18,10 +18,10 @@ This plugin provides the following optimizations:
   - [ ] Collections.entity_by_type 
   - [ ] Collections.entity_filtering 
   - [ ] Chunk serialization
-  - [ ] Cache iterate outwards
+  - [x] Cache iterate outwards
   - [ ] Block moving block shapes
   - [ ] Shapes blockstate cache
-  - [ ] Lithium gen
+  - [x] Lithium gen
   - [ ] Ai sensor secondary POI
   - [ ] World tick scheduler
 - [x] Smarter statistics-ticking

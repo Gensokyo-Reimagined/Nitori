@@ -20,6 +20,10 @@
     "MixinMob",
     "MixinWorldGenRegion",
     "MixinNoiseBasedChunkGenerator",
-    "MixinBlockPos"
+    "MixinBlockPos",
+    "MixinIteratorSafeOrderedReferenceSet",
+    "MixinChunkEntitySlicess",
+	"MixinServerBossEvent"
+	"MixinServerEntity"
   ]
 }

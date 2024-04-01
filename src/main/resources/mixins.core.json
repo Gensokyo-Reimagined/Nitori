@@ -23,7 +23,7 @@
     "MixinBlockPos",
     "MixinIteratorSafeOrderedReferenceSet",
     "MixinChunkEntitySlicess",
-	"MixinServerBossEvent"
+	"MixinServerBossEvent",
 	"MixinServerEntity"
   ]
 }

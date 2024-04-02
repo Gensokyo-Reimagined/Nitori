@@ -12,20 +12,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.core.access;
 
 import com.destroystokyo.paper.util.maplist.EntityList;
-import io.papermc.paper.world.ChunkEntitySlices;
-import net.gensokyoreimagined.nitori.core.access.IMixinChunkEntitySlicesAccess;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(ChunkEntitySlices.class)
-public abstract class MixinChunkEntitySlices implements IMixinChunkEntitySlicesAccess {
-    // Implementation of 0107-Multithreaded-Tracker.patch
-    @Override
-    @Final
-    @Accessor
-    public abstract EntityList getEntities();
+public interface IMixinChunkEntitySlicesAccess {
+    @SuppressWarnings("EmptyMethod")
+    EntityList getEntities();
 }

@@ -16,7 +16,7 @@ package net.gensokyoreimagined.nitori.core;
 
 import com.google.common.collect.Lists;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.gensokyoreimagined.nitori.core.isolation.net_minecraft_server_level.ChunkMapMixin;
+import net.gensokyoreimagined.nitori.core.access.IMixinChunkMapAccess;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
@@ -27,7 +27,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerCommonPacketListenerImpl;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import org.objectweb.asm.Opcodes;
@@ -46,7 +46,8 @@ import java.util.function.Consumer;
 
 @Mixin(ServerEntity.class)
 public abstract class MixinServerEntity {
-    @Shadow @Final
+    @Final
+    @Shadow
     private Entity entity;
 
     @Shadow
@@ -58,45 +59,51 @@ public abstract class MixinServerEntity {
     }
 
     // Implementation of 0107-Multithreaded-Tracker.patch
-    @Redirect(method = "removePairing", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerCommonPacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void skipSendForOriginalRemovePairing(ServerCommonPacketListenerImpl self, Packet<?> packet) {}
+    @SuppressWarnings("EmptyMethod")
+    @Redirect(method = "removePairing", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
+    private void skipSendForOriginalRemovePairing(ServerGamePacketListenerImpl self, Packet<?> packet) {}
 
     // Implementation of 0107-Multithreaded-Tracker.patch
     @Inject(method = "removePairing", at = @At(value = "TAIL"))
     private void invokeRemovePairingSendOnMain(ServerPlayer serverplayer, CallbackInfo callbackInfo) {
         // Mirai start - ensure main thread
-        ((ChunkMapMixin) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).runOnTrackerMainThread(() ->
+        ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
             serverplayer.connection.send(new ClientboundRemoveEntitiesPacket(this.entity.getId()))
         );
         // Mirai end
     }
 
     // Implementation of 0107-Multithreaded-Tracker.patch
+    @SuppressWarnings("EmptyMethod")
     @Redirect(method = "addPairing", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerEntity;sendPairingData(Lnet/minecraft/server/level/ServerPlayer;Ljava/util/function/Consumer;)V"))
     private void skipSendPrepForOriginalAddPairing(ServerEntity self, ServerPlayer serverplayer, Consumer<Packet<ClientGamePacketListener>> consumer) {}
 
     // Implementation of 0107-Multithreaded-Tracker.patch
-    @Redirect(method = "addPairing", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerCommonPacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
-    private void skipSendForOriginalAddPairing(ServerCommonPacketListenerImpl self, Packet<?> packet) {}
+    @SuppressWarnings("EmptyMethod")
+    @Redirect(method = "addPairing", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"))
+    private void skipSendForOriginalAddPairing(ServerGamePacketListenerImpl self, Packet<?> packet) {}
 
     // Implementation of 0107-Multithreaded-Tracker.patch
     @Inject(method = "addPairing", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;startSeenByPlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
     private void invokeAddPairingSendOnMain(ServerPlayer serverplayer, CallbackInfo callbackInfo, @Local List<Packet<ClientGamePacketListener>> list) {
-        ((ChunkMapMixin) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).runOnTrackerMainThread(() -> { // Mirai - main thread
+        ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> { // Mirai - main thread
             this.sendPairingData(serverplayer, list::add);
             serverplayer.connection.send(new ClientboundBundlePacket(list));
         });
     }
 
     // Implementation of 0107-Multithreaded-Tracker.patch
+    @SuppressWarnings("SameReturnValue")
     @Redirect(method = "sendDirtyEntityData", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/syncher/SynchedEntityData;getNonDefaultValues()Ljava/util/List;"))
     private List<SynchedEntityData.DataValue<?>> skipGetForGenericNonDefault(SynchedEntityData self) {return null;}
 
     // Implementation of 0107-Multithreaded-Tracker.patch
+    @SuppressWarnings("EmptyMethod")
     @Redirect(method = "sendDirtyEntityData", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;trackedDataValues:Ljava/util/List;", opcode = Opcodes.PUTFIELD))
     private void skipSetForGenericNonDefault(ServerEntity self, List<SynchedEntityData.DataValue<?>> nonDefaultValues) {}
 
     // Implementation of 0107-Multithreaded-Tracker.patch
+    @SuppressWarnings("EmptyMethod")
     @Redirect(method = "sendDirtyEntityData", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerEntity;broadcastAndSend(Lnet/minecraft/network/protocol/Packet;)V"))
     private void skipTrasmitForNonDefault(ServerEntity self, Packet<?> packet) {}
 
@@ -104,7 +111,7 @@ public abstract class MixinServerEntity {
     @Inject(method = "sendDirtyEntityData", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;entity:Lnet/minecraft/world/entity/Entity;", opcode = Opcodes.GETFIELD, ordinal = 2))
     private void invokeSendForGenericDirtyEntityDataOnMain(CallbackInfo callbackInfo, @Local SynchedEntityData synchedentitydata, @Local List<SynchedEntityData.DataValue<?>> list) {
         // Mirai start - sync
-        ((ChunkMapMixin) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).runOnTrackerMainThread(() -> {
+        ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> {
             this.trackedDataValues = synchedentitydata.getNonDefaultValues();
             this.broadcastAndSend(new ClientboundSetEntityDataPacket(this.entity.getId(), list));
         });
@@ -118,7 +125,7 @@ public abstract class MixinServerEntity {
     private void invokeSendForLivingDirtyEntityDataOnMain(CallbackInfo callbackInfo, @Local Set<AttributeInstance> set) {
         // Mirai start - sync
         final var copy = Lists.newArrayList(set);
-        ((ChunkMapMixin) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).runOnTrackerMainThread(() -> {
+        ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> {
             // CraftBukkit start - Send scaled max health
             if (this.entity instanceof ServerPlayer) {
                 ((ServerPlayer) this.entity).getBukkitEntity().injectScaledMaxHealth(copy, false);

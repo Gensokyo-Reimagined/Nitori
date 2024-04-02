@@ -12,17 +12,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.core.isolation.net_minecraft_server_level;
+package net.gensokyoreimagined.nitori.core;
 
 import com.destroystokyo.paper.util.misc.PooledLinkedHashSets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceSets;
-import net.gensokyoreimagined.nitori.plugins.NitoriConfig;
+//import net.gensokyoreimagined.nitori.plugins.NitoriConfig;
+import net.gensokyoreimagined.nitori.core.access.IMixinChunkMapAccess;
+import net.gensokyoreimagined.nitori.core.access.IMixinChunkMap_TrackedEntityAccess;
 import net.gensokyoreimagined.nitori.tracker.MultithreadedTracker;
 import net.minecraft.server.level.ChunkMap;
-import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
@@ -32,6 +33,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -42,26 +45,28 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.Nullable;
 
 @Mixin(ChunkMap.class)
-public class ChunkMapMixin {
+public class ChunkMapMixin implements IMixinChunkMapAccess {
 
     @Mutable
     @Shadow @Final public Int2ObjectMap<ChunkMap.TrackedEntity> entityMap;
 
     // Implementation of 0107-Multithreaded-Tracker.patch
-    @Shadow @Final
-    ServerLevel level;
+    @Final
+    @Shadow
+    public ServerLevel level;
 
     // Implementation of 0107-Multithreaded-Tracker.patch
     @Unique
-    private @Nullable MultithreadedTracker multithreadedTracker;
+    private @Nullable MultithreadedTracker gensouHacks$multithreadedTracker;
 
     // Implementation of 0107-Multithreaded-Tracker.patch
-    @Unique @Final
-    private final ConcurrentLinkedQueue<Runnable> trackerMainThreadTasks = new ConcurrentLinkedQueue<>();
+    @Final
+    @Unique
+    private final ConcurrentLinkedQueue<Runnable> gensouHacks$trackerMainThreadTasks = new ConcurrentLinkedQueue<>();
 
     // Implementation of 0107-Multithreaded-Tracker.patch
     @Unique
-    private boolean tracking = false;
+    private boolean gensouHacks$tracking = false;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void reassignEntityTrackers(CallbackInfo ci) {
@@ -69,46 +74,46 @@ public class ChunkMapMixin {
     }
 
     // Implementation of 0107-Multithreaded-Tracker.patch
+    @Override
     @Unique
-    public void runOnTrackerMainThread(final Runnable runnable) {
-        if (this.tracking) {
-            this.trackerMainThreadTasks.add(runnable);
+    public void gensouHacks$runOnTrackerMainThread(final Runnable runnable) {
+        if (this.gensouHacks$tracking) {
+            this.gensouHacks$trackerMainThreadTasks.add(runnable);
         } else {
             runnable.run();
         }
     }
 
-    @Inject(method = "processTrackQueue", at = @At("HEAD"))
+    @Inject(method = "processTrackQueue", at = @At("HEAD"), cancellable = true)
     private void atProcessTrackQueueHead(CallbackInfo callbackInfo) {
         // Implementation of 0107-Multithreaded-Tracker.patch
         //if (NitoriConfig.enableAsyncEntityTracker) {
-        if (true) {
-            if (this.multithreadedTracker == null) {
-                this.multithreadedTracker = new MultithreadedTracker(this.level.chunkSource.entityTickingChunks, this.trackerMainThreadTasks);
+            if (this.gensouHacks$multithreadedTracker == null) {
+                this.gensouHacks$multithreadedTracker = new MultithreadedTracker(this.level.chunkSource.entityTickingChunks, this.gensouHacks$trackerMainThreadTasks);
             }
 
-            this.tracking = true;
+            this.gensouHacks$tracking = true;
             try {
-                this.multithreadedTracker.tick();
+                this.gensouHacks$multithreadedTracker.tick();
             } finally {
-                this.tracking = false;
+                this.gensouHacks$tracking = false;
             }
             callbackInfo.cancel();
-        }
+        //}
         // Mirai end
     }
 
     @Mixin(ChunkMap.TrackedEntity.class)
-    public abstract class TrackedEntity {
+    public static abstract class TrackedEntity implements IMixinChunkMap_TrackedEntityAccess {
         // Implementation of 0107-Multithreaded-Tracker.patch
-        @Shadow @Final
-        public ServerEntity serverEntity; // Mirai -> public
+        @Override
+        @Final
+        @Accessor
+        public abstract Entity getEntity(); // Mirai -> public
 
-        // Implementation of 0107-Multithreaded-Tracker.patch
-        @Shadow @Final
-        public Entity entity; // Mirai -> public
-
-        @Mutable @Shadow @Final
+        @Final
+        @Mutable
+        @Shadow
         public Set<ServerPlayerConnection> seenBy;
 
         @Inject(method = "<init>", at = @At("RETURN"))
@@ -118,16 +123,18 @@ public class ChunkMapMixin {
         }
 
         // Implementation of 0107-Multithreaded-Tracker.patch
-        @Shadow
-        public final void updatePlayers(PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> newTrackerCandidates) { // Mirai -> public
-            throw new AssertionError("Mixin failed to apply!");
-        }
+        @Override
+        @Final
+        @Invoker
+        public abstract void callUpdatePlayers(PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> newTrackerCandidates); // Mirai -> public
 
         // Implementation of 0107-Multithreaded-Tracker.patch
+        @SuppressWarnings("EmptyMethod")
         @Redirect(method = "removePlayer", at = @At(value = "INVOKE", target = "Lorg/spigotmc/AsyncCatcher;catchOp(Ljava/lang/String;)V"))
         private void skipSpigotAsyncPlayerTrackerClear(String reason) {} // Mirai - we can remove async too
 
         // Implementation of 0107-Multithreaded-Tracker.patch
+        @SuppressWarnings("EmptyMethod")
         @Redirect(method = "updatePlayer", at = @At(value = "INVOKE", target = "Lorg/spigotmc/AsyncCatcher;catchOp(Ljava/lang/String;)V"))
         private void skipSpigotAsyncPlayerTrackerUpdate(String reason) {} // Mirai - we can update async
     }

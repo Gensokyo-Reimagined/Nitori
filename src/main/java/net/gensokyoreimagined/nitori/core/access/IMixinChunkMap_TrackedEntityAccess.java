@@ -12,20 +12,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.core.access;
 
-import com.destroystokyo.paper.util.maplist.EntityList;
-import io.papermc.paper.world.ChunkEntitySlices;
-import net.gensokyoreimagined.nitori.core.access.IMixinChunkEntitySlicesAccess;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import com.destroystokyo.paper.util.misc.PooledLinkedHashSets;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
-@Mixin(ChunkEntitySlices.class)
-public abstract class MixinChunkEntitySlices implements IMixinChunkEntitySlicesAccess {
-    // Implementation of 0107-Multithreaded-Tracker.patch
-    @Override
-    @Final
-    @Accessor
-    public abstract EntityList getEntities();
+public interface IMixinChunkMap_TrackedEntityAccess {
+    @SuppressWarnings("EmptyMethod")
+    Entity getEntity();
+
+    @SuppressWarnings("EmptyMethod")
+    void callUpdatePlayers(PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> newTrackerCandidates);
 }

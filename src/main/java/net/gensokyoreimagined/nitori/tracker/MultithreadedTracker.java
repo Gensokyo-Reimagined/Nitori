@@ -21,9 +21,9 @@ package net.gensokyoreimagined.nitori.tracker;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.papermc.paper.util.maplist.IteratorSafeOrderedReferenceSet;
 import io.papermc.paper.world.ChunkEntitySlices;
-import net.gensokyoreimagined.nitori.core.MixinIteratorSafeOrderedReferenceSet;
-import net.gensokyoreimagined.nitori.core.MixinChunkEntitySlices;
-import net.gensokyoreimagined.nitori.core.isolation.net_minecraft_server_level.ChunkMapMixin;
+import net.gensokyoreimagined.nitori.core.access.IMixinChunkEntitySlicesAccess;
+import net.gensokyoreimagined.nitori.core.access.IMixinChunkMap_TrackedEntityAccess;
+import net.gensokyoreimagined.nitori.core.access.IMixinIteratorSafeOrderedReferenceSetAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.entity.Entity;
@@ -74,7 +74,7 @@ public class MultithreadedTracker {
                 trackerExecutor.execute(this::runUpdatePlayers);
             }
 
-            while (this.taskIndex.get() < ((MixinIteratorSafeOrderedReferenceSet) (Object) this.entityTickingChunks).getListSize()) {
+            while (this.taskIndex.get() < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize()) {
                 this.runMainThreadTasks();
                 this.handleChunkUpdates(5); // assist
             }
@@ -102,7 +102,7 @@ public class MultithreadedTracker {
                 if (chunk != null) {
                     this.updateChunkEntities(chunk, TrackerStage.SEND_CHANGES);
                 }
-            } while (++iterator < ((MixinIteratorSafeOrderedReferenceSet) (Object) this.entityTickingChunks).getListSize());
+            } while (++iterator < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize());
         } finally {
             this.entityTickingChunks.finishRawIterator();
         }
@@ -129,8 +129,8 @@ public class MultithreadedTracker {
 
     private boolean handleChunkUpdates(int tasks) {
         int index;
-        while ((index = this.taskIndex.getAndAdd(tasks)) < ((MixinIteratorSafeOrderedReferenceSet) (Object) this.entityTickingChunks).getListSize()) {
-            for (int i = index; i < index + tasks && i < ((MixinIteratorSafeOrderedReferenceSet) (Object) this.entityTickingChunks).getListSize(); i++) {
+        while ((index = this.taskIndex.getAndAdd(tasks)) < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize()) {
+            for (int i = index; i < index + tasks && i < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize(); i++) {
                 LevelChunk chunk = this.entityTickingChunks.rawGet(i);
                 if (chunk != null) {
                     try {
@@ -154,7 +154,7 @@ public class MultithreadedTracker {
             return;
         }
 
-        final Entity[] rawEntities = ((MixinChunkEntitySlices) (Object) entitySlices).entities.getRawData();
+        final Entity[] rawEntities = ((IMixinChunkEntitySlicesAccess) (Object) entitySlices).getEntities().getRawData();
         final ChunkMap chunkMap = chunk.level.chunkSource.chunkMap;
 
         for (int i = 0; i < rawEntities.length; i++) {
@@ -165,7 +165,7 @@ public class MultithreadedTracker {
                     if (trackerStage == TrackerStage.SEND_CHANGES) {
                         entityTracker.serverEntity.sendChanges();
                     } else if (trackerStage == TrackerStage.UPDATE_PLAYERS) {
-                        ((ChunkMapMixin.TrackedEntity) (Object) entityTracker).updatePlayers(((ChunkMapMixin.TrackedEntity) (Object) entityTracker).entity.getPlayersInTrackRange());
+                        ((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).callUpdatePlayers(((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).getEntity().getPlayersInTrackRange());
                     }
                 }
             }

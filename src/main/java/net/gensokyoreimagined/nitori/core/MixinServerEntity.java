@@ -94,18 +94,6 @@ public abstract class MixinServerEntity {
         });
     }
 
-    /*
-    // Implementation of 0107-Multithreaded-Tracker.patch
-    @SuppressWarnings("SameReturnValue")
-    @Redirect(method = "sendDirtyEntityData", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/syncher/SynchedEntityData;getNonDefaultValues()Ljava/util/List;"))
-    private List<SynchedEntityData.DataValue<?>> skipGetForGenericNonDefault(SynchedEntityData self) {return null;}
-
-    // Implementation of 0107-Multithreaded-Tracker.patch
-    @SuppressWarnings("EmptyMethod")
-    @Redirect(method = "sendDirtyEntityData", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;trackedDataValues:Ljava/util/List;", opcode = Opcodes.PUTFIELD))
-    private void skipSetForGenericNonDefault(ServerEntity self, List<SynchedEntityData.DataValue<?>> nonDefaultValues) {}
-    */
-
     // Implementation of 0107-Multithreaded-Tracker.patch
     @SuppressWarnings("EmptyMethod")
     @Redirect(method = "sendDirtyEntityData", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerEntity;broadcastAndSend(Lnet/minecraft/network/protocol/Packet;)V"))
@@ -115,9 +103,9 @@ public abstract class MixinServerEntity {
     @Inject(method = "sendDirtyEntityData", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;entity:Lnet/minecraft/world/entity/Entity;", opcode = Opcodes.GETFIELD, ordinal = 2, shift = At.Shift.BY, by = -4))
     private void invokeSendForGenericDirtyEntityDataOnMain(CallbackInfo callbackInfo, @Local SynchedEntityData synchedentitydata, @Local List<SynchedEntityData.DataValue<?>> list) {
         // Mirai start - sync
-        ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> {
-            this.broadcastAndSend(new ClientboundSetEntityDataPacket(this.entity.getId(), list));
-        });
+        ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
+            this.broadcastAndSend(new ClientboundSetEntityDataPacket(this.entity.getId(), list))
+        );
         // Mirai end
     }
 

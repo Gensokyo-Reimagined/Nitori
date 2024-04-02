@@ -94,6 +94,7 @@ public abstract class MixinServerEntity {
         });
     }
 
+    /*
     // Implementation of 0107-Multithreaded-Tracker.patch
     @SuppressWarnings("SameReturnValue")
     @Redirect(method = "sendDirtyEntityData", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/syncher/SynchedEntityData;getNonDefaultValues()Ljava/util/List;"))
@@ -103,6 +104,7 @@ public abstract class MixinServerEntity {
     @SuppressWarnings("EmptyMethod")
     @Redirect(method = "sendDirtyEntityData", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;trackedDataValues:Ljava/util/List;", opcode = Opcodes.PUTFIELD))
     private void skipSetForGenericNonDefault(ServerEntity self, List<SynchedEntityData.DataValue<?>> nonDefaultValues) {}
+    */
 
     // Implementation of 0107-Multithreaded-Tracker.patch
     @SuppressWarnings("EmptyMethod")
@@ -114,7 +116,6 @@ public abstract class MixinServerEntity {
     private void invokeSendForGenericDirtyEntityDataOnMain(CallbackInfo callbackInfo, @Local SynchedEntityData synchedentitydata, @Local List<SynchedEntityData.DataValue<?>> list) {
         // Mirai start - sync
         ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> {
-            this.trackedDataValues = synchedentitydata.getNonDefaultValues();
             this.broadcastAndSend(new ClientboundSetEntityDataPacket(this.entity.getId(), list));
         });
         // Mirai end

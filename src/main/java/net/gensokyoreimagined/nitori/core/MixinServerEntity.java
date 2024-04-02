@@ -40,6 +40,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -51,6 +52,7 @@ public abstract class MixinServerEntity {
     private Entity entity;
 
     @Shadow
+    @Nullable
     private List<SynchedEntityData.DataValue<?>> trackedDataValues;
 
     @Shadow
@@ -84,7 +86,7 @@ public abstract class MixinServerEntity {
     private void skipSendForOriginalAddPairing(ServerGamePacketListenerImpl self, Packet<?> packet) {}
 
     // Implementation of 0107-Multithreaded-Tracker.patch
-    @Inject(method = "addPairing", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;startSeenByPlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
+    @Inject(method = "addPairing", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;entity:Lnet/minecraft/world/entity/Entity;", opcode = Opcodes.GETFIELD, shift = At.Shift.BEFORE))
     private void invokeAddPairingSendOnMain(ServerPlayer serverplayer, CallbackInfo callbackInfo, @Local List<Packet<ClientGamePacketListener>> list) {
         ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> { // Mirai - main thread
             this.sendPairingData(serverplayer, list::add);
@@ -108,7 +110,7 @@ public abstract class MixinServerEntity {
     private void skipTrasmitForNonDefault(ServerEntity self, Packet<?> packet) {}
 
     // Implementation of 0107-Multithreaded-Tracker.patch
-    @Inject(method = "sendDirtyEntityData", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;entity:Lnet/minecraft/world/entity/Entity;", opcode = Opcodes.GETFIELD, ordinal = 2))
+    @Inject(method = "sendDirtyEntityData", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;entity:Lnet/minecraft/world/entity/Entity;", opcode = Opcodes.GETFIELD, ordinal = 2, shift = At.Shift.BY, by = -4))
     private void invokeSendForGenericDirtyEntityDataOnMain(CallbackInfo callbackInfo, @Local SynchedEntityData synchedentitydata, @Local List<SynchedEntityData.DataValue<?>> list) {
         // Mirai start - sync
         ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> {
@@ -121,7 +123,7 @@ public abstract class MixinServerEntity {
     // stubbing of broadcastAndSend in if (this.entity instanceof LivingEntity) handled in skipTrasmitForNonDefault
 
     // Implementation of 0107-Multithreaded-Tracker.patch
-    @Inject(method = "sendDirtyEntityData", at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"))
+    @Inject(method = "sendDirtyEntityData", at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V", shift = At.Shift.BY, by = -4))
     private void invokeSendForLivingDirtyEntityDataOnMain(CallbackInfo callbackInfo, @Local Set<AttributeInstance> set) {
         // Mirai start - sync
         final var copy = Lists.newArrayList(set);

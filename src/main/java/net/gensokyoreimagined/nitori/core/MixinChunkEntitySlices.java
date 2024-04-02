@@ -16,7 +16,7 @@ package net.gensokyoreimagined.nitori.core;
 
 import com.destroystokyo.paper.util.maplist.EntityList;
 import io.papermc.paper.world.ChunkEntitySlices;
-import net.gensokyoreimagined.nitori.core.access.IMixinChunkEntitySlicesAccess;
+import net.gensokyoreimagined.nitori.access.IMixinChunkEntitySlicesAccess;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;

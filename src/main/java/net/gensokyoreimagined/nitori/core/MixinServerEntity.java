@@ -16,7 +16,7 @@ package net.gensokyoreimagined.nitori.core;
 
 import com.google.common.collect.Lists;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.gensokyoreimagined.nitori.core.access.IMixinChunkMapAccess;
+import net.gensokyoreimagined.nitori.access.IMixinChunkMapAccess;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;

@@ -15,7 +15,7 @@
 package net.gensokyoreimagined.nitori.core;
 
 import io.papermc.paper.util.maplist.IteratorSafeOrderedReferenceSet;
-import net.gensokyoreimagined.nitori.core.access.IMixinIteratorSafeOrderedReferenceSetAccess;
+import net.gensokyoreimagined.nitori.access.IMixinIteratorSafeOrderedReferenceSetAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -25,7 +25,6 @@ public abstract class MixinIteratorSafeOrderedReferenceSet implements IMixinIter
     // Implementation of 0107-Multithreaded-Tracker.patch
 	// @Accessor happens to do exactly what is needed, making for nice shorthand
     @Override
-    @Unique
     @Accessor
     public abstract int getListSize(); // Mirai - expose listSize
 }

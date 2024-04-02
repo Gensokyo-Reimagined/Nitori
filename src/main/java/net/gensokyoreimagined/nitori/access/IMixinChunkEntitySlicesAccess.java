@@ -12,9 +12,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.core.access;
+package net.gensokyoreimagined.nitori.access;
 
-public interface IMixinIteratorSafeOrderedReferenceSetAccess {
+import com.destroystokyo.paper.util.maplist.EntityList;
+
+public interface IMixinChunkEntitySlicesAccess {
     @SuppressWarnings("EmptyMethod")
-    int getListSize();
+    EntityList getEntities();
 }

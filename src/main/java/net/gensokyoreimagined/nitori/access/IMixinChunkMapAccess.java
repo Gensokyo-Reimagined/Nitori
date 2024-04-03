@@ -20,35 +20,4 @@ import javax.annotation.Nullable;
 
 public interface IMixinChunkMapAccess {
     void gensouHacks$runOnTrackerMainThread(final Runnable runnable);
-
-    @Nullable
-    Class<?> gensouHacks$citizensPluginTrackedEntityClass = initCitizensPluginTrackedEntityClass();
-    @Nullable
-    Class<?> gensouHacks$citizensPluginHumanNPCEntityClass = initCitizensPluginHumanNPCEntityClass();
-
-    @Nullable
-    private static Class<?> initCitizensPluginTrackedEntityClass() {
-        try {
-            return Class.forName("net.citizensnpcs.nms.v1_20_R3.util.CitizensEntityTracker", false, ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-    @Nullable
-    private static Class<?> initCitizensPluginHumanNPCEntityClass() {
-        try {
-            return Class.forName("net.citizensnpcs.nms.v1_20_R3.entity.EntityHumanNPC", false, ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    @Nullable
-    static Class<?> getGensouHacks$citizensPluginTrackedEntityClass() {
-        return gensouHacks$citizensPluginTrackedEntityClass;
-    }
-    @Nullable
-    static Class<?> getGensouHacks$citizensPluginHumanNPCEntityClass() {
-        return gensouHacks$citizensPluginHumanNPCEntityClass;
-    }
 }

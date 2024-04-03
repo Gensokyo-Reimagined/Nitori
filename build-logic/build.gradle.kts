@@ -13,6 +13,7 @@ dependencies {
 
 dependencies {
   compileOnly(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
+  compileOnly("Citizens2:Citizens:2.0.33:3367@jar")
 }
 
 java {

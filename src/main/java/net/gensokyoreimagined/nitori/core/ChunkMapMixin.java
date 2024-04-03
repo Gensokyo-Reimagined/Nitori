@@ -19,6 +19,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceSets;
+import net.citizensnpcs.nms.v1_20_R3.util.CitizensEntityTracker;
+import net.citizensnpcs.nms.v1_20_R3.entity.EntityHumanNPC;
 //import net.gensokyoreimagined.nitori.plugins.NitoriConfig;
 import net.gensokyoreimagined.nitori.access.IMixinChunkMapAccess;
 import net.gensokyoreimagined.nitori.access.IMixinChunkMap_TrackedEntityAccess;
@@ -133,7 +135,7 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Redirect(method = "updatePlayers(Lcom/destroystokyo/paper/util/misc/PooledLinkedHashSets$PooledObjectLinkedOpenHashSet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;updatePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
         private void handleCitizensPluginTracking(ChunkMap.TrackedEntity self, ServerPlayer serverPlayer) {
             // Nitori - Citizens tracker must run on the main thread to avoid cyclic wait
-            if (IMixinChunkMapAccess.gensouHacks$citizensPluginTrackedEntityClass != null && IMixinChunkMapAccess.gensouHacks$citizensPluginHumanNPCEntityClass != null && ChunkMapMixin.gensouHacks$citizensPluginTrackedEntityClass.isInstance(this) && ChunkMapMixin.gensouHacks$citizensPluginHumanNPCEntityClass.isInstance(serverPlayer)) {
+            if (this instanceof CitizensEntityTracker && !(serverPlayer instanceof net.citizensnpcs.nms.v1_20_R3.entity.EntityHumanNPC)) {
                 ((IMixinChunkMapAccess) (Object) ((ServerLevel) serverPlayer.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
                     this.updatePlayer(serverPlayer)
                 );

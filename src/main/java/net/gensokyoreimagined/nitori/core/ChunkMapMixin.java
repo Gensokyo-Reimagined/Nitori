@@ -116,6 +116,8 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Shadow
         public Set<ServerPlayerConnection> seenBy;
 
+        @Shadow public abstract void updatePlayer(ServerPlayer player);
+
         @Inject(method = "<init>", at = @At("RETURN"))
         private void reassignSeenBy(CallbackInfo ci) {
             // Implementation of 0107-Multithreaded-Tracker.patch
@@ -127,6 +129,18 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Final
         @Invoker
         public abstract void callUpdatePlayers(PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> newTrackerCandidates); // Mirai -> public
+
+        @Redirect(method = "updatePlayers(Lcom/destroystokyo/paper/util/misc/PooledLinkedHashSets$PooledObjectLinkedOpenHashSet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;updatePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
+        private void handleCitizensPluginTracking(ChunkMap.TrackedEntity self, ServerPlayer serverPlayer) {
+            // Nitori - Citizens tracker must run on the main thread to avoid cyclic wait
+            if (IMixinChunkMapAccess.gensouHacks$citizensPluginTrackedEntityClass != null && IMixinChunkMapAccess.gensouHacks$citizensPluginHumanNPCEntityClass != null && ChunkMapMixin.gensouHacks$citizensPluginTrackedEntityClass.isInstance(this) && ChunkMapMixin.gensouHacks$citizensPluginHumanNPCEntityClass.isInstance(serverPlayer)) {
+                ((IMixinChunkMapAccess) (Object) ((ServerLevel) serverPlayer.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
+                    this.updatePlayer(serverPlayer)
+                );
+            } else {
+                this.updatePlayer(serverPlayer);
+            }
+        }
 
         // Implementation of 0107-Multithreaded-Tracker.patch
         @SuppressWarnings("EmptyMethod")

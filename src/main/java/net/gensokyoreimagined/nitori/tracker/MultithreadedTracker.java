@@ -53,9 +53,6 @@ public class MultithreadedTracker {
     private final ConcurrentLinkedQueue<Runnable> mainThreadTasks;
     private final AtomicInteger finishedTasks = new AtomicInteger();
 
-    private static boolean searchedForCitizensPlugin = false;
-    private static Class<?> citizensTrackedEtntityClass;
-
     public MultithreadedTracker(IteratorSafeOrderedReferenceSet<LevelChunk> entityTickingChunks, ConcurrentLinkedQueue<Runnable> mainThreadTasks) {
         this.entityTickingChunks = entityTickingChunks;
         this.mainThreadTasks = mainThreadTasks;
@@ -168,28 +165,11 @@ public class MultithreadedTracker {
                     if (trackerStage == TrackerStage.SEND_CHANGES) {
                         entityTracker.serverEntity.sendChanges();
                     } else if (trackerStage == TrackerStage.UPDATE_PLAYERS) {
-                        // Nitori - Citizens tracker must run on the main thread to avoid cyclic wait
-                        if (!searchedForCitizensPlugin) {
-                            try {
-                                citizensTrackedEtntityClass = Class.forName("net.citizensnpcs.nms.v1_20_R3.util.CitizensEntityTracker", false, ClassLoader.getSystemClassLoader());
-                            } catch (ClassNotFoundException ignored) {}
-                            searchedForCitizensPlugin = true;
-                        }
-                        if (citizensTrackedEtntityClass != null && citizensTrackedEtntityClass.isInstance(entityTracker)) {
-                            this.mainThreadTasks.add(() ->
-                                invokeUpdatePlayersForCitizensTracker(entityTracker)
-                            );
-                        } else {
-                            invokeUpdatePlayersForCitizensTracker(entityTracker);
-                        }
+                        ((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).callUpdatePlayers(((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).getEntity().getPlayersInTrackRange());
                     }
                 }
             }
         }
-    }
-
-    private void invokeUpdatePlayersForCitizensTracker(ChunkMap.TrackedEntity entityTracker) {
-        ((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).callUpdatePlayers(((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).getEntity().getPlayersInTrackRange());
     }
 
 }

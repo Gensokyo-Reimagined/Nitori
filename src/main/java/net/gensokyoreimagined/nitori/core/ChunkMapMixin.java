@@ -135,7 +135,7 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Redirect(method = "updatePlayers(Lcom/destroystokyo/paper/util/misc/PooledLinkedHashSets$PooledObjectLinkedOpenHashSet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;updatePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
         private void handleCitizensPluginTracking(ChunkMap.TrackedEntity self, ServerPlayer serverPlayer) {
             // Nitori - Citizens tracker must run on the main thread to avoid cyclic wait
-            if (this instanceof CitizensEntityTracker && !(serverPlayer instanceof net.citizensnpcs.nms.v1_20_R3.entity.EntityHumanNPC)) {
+            if (this instanceof CitizensEntityTracker && !(serverPlayer instanceof EntityHumanNPC)) {
                 ((IMixinChunkMapAccess) (Object) ((ServerLevel) serverPlayer.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
                     this.updatePlayer(serverPlayer)
                 );

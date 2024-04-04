@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.plugins;
+package net.gensokyoreimagined.nitori.config;
 
 /*
  * Directly derived from MiraiConfig of Mirai, licensed under GNU General Public License v3.0

@@ -19,9 +19,10 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceSets;
-//import net.gensokyoreimagined.nitori.plugins.NitoriConfig;
+//import net.gensokyoreimagined.nitori.config.NitoriConfig;
 import net.gensokyoreimagined.nitori.access.IMixinChunkMapAccess;
 import net.gensokyoreimagined.nitori.access.IMixinChunkMap_TrackedEntityAccess;
+import net.gensokyoreimagined.nitori.compatibility.CitizensPluginCompatibility;
 import net.gensokyoreimagined.nitori.tracker.MultithreadedTracker;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
@@ -119,33 +120,6 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Shadow
         public abstract void updatePlayer(ServerPlayer player);
 
-        @Nullable
-        @Unique
-        private static Class<?> gensouHacks$citizensPluginCitizensEntityTrackerClass = null;
-        @Nullable
-        @Unique
-        private static Class<?> gensouHacks$citizensPluginEntityHumanNPCClass = null;
-        @Unique
-        private static boolean gensouHacks$attemptedCitizenssearch = false;
-
-        @Unique
-        private static void gensouHacks$findCitizensClassesIfNeeded() {
-            if (!gensouHacks$attemptedCitizenssearch) {
-                try {
-                    var systemClassLoader = ClassLoader.getSystemClassLoader();
-                    gensouHacks$citizensPluginCitizensEntityTrackerClass = Class.forName("net.citizensnpcs.nms.v1_20_R3.util.CitizensEntityTracker", false, systemClassLoader);
-                    gensouHacks$citizensPluginEntityHumanNPCClass = Class.forName("net.citizensnpcs.nms.v1_20_R3.entity.EntityHumanNPC", false, systemClassLoader);
-                } catch (ClassNotFoundException ignored) {}
-                gensouHacks$attemptedCitizenssearch = true;
-            }
-        }
-
-        @Unique
-        private static boolean gensouHacks$areCitizensClassesPresent() {
-            gensouHacks$findCitizensClassesIfNeeded();
-            return gensouHacks$citizensPluginCitizensEntityTrackerClass != null && gensouHacks$citizensPluginEntityHumanNPCClass != null;
-        }
-
         @Inject(method = "<init>", at = @At("RETURN"))
         private void reassignSeenBy(CallbackInfo ci) {
             // Implementation of 0107-Multithreaded-Tracker.patch
@@ -161,7 +135,7 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Redirect(method = "updatePlayers(Lcom/destroystokyo/paper/util/misc/PooledLinkedHashSets$PooledObjectLinkedOpenHashSet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;updatePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
         private void handleCitizensPluginTracking(ChunkMap.TrackedEntity self, ServerPlayer serverPlayer) {
             // Nitori - Citizens tracker must run on the main thread to avoid cyclic wait
-            if (gensouHacks$areCitizensClassesPresent() && gensouHacks$citizensPluginCitizensEntityTrackerClass.isInstance(this) && !gensouHacks$citizensPluginEntityHumanNPCClass.isInstance(serverPlayer)) {
+            if (CitizensPluginCompatibility.shouldRedirectToMainThread(self, serverPlayer)) {
                 ((IMixinChunkMapAccess) (Object) ((ServerLevel) serverPlayer.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
                     this.updatePlayer(serverPlayer)
                 );

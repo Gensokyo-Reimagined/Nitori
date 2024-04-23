@@ -15,6 +15,7 @@
 package net.gensokyoreimagined.nitori.core;
 
 import com.destroystokyo.paper.util.misc.PooledLinkedHashSets;
+import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
@@ -22,9 +23,10 @@ import it.unimi.dsi.fastutil.objects.ReferenceSets;
 //import net.gensokyoreimagined.nitori.config.NitoriConfig;
 import net.gensokyoreimagined.nitori.access.IMixinChunkMapAccess;
 import net.gensokyoreimagined.nitori.access.IMixinChunkMap_TrackedEntityAccess;
-import net.gensokyoreimagined.nitori.compatibility.CitizensPluginCompatibility;
+import net.gensokyoreimagined.nitori.compatibility.PluginCompatibilityRegistry;
 import net.gensokyoreimagined.nitori.tracker.MultithreadedTracker;
 import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerPlayerConnection;
@@ -88,6 +90,7 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
     @Inject(method = "processTrackQueue", at = @At("HEAD"), cancellable = true)
     private void atProcessTrackQueueHead(CallbackInfo callbackInfo) {
         // Implementation of 0107-Multithreaded-Tracker.patch
+        //TODO: Restore config condition
         //if (NitoriConfig.enableAsyncEntityTracker) {
             if (this.gensouHacks$multithreadedTracker == null) {
                 this.gensouHacks$multithreadedTracker = new MultithreadedTracker(this.level.chunkSource.entityTickingChunks, this.gensouHacks$trackerMainThreadTasks);
@@ -135,7 +138,7 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Redirect(method = "updatePlayers(Lcom/destroystokyo/paper/util/misc/PooledLinkedHashSets$PooledObjectLinkedOpenHashSet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;updatePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
         private void handleCitizensPluginTracking(ChunkMap.TrackedEntity self, ServerPlayer serverPlayer) {
             // Nitori - Citizens tracker must run on the main thread to avoid cyclic wait
-            if (CitizensPluginCompatibility.shouldRedirectToMainThread(self, serverPlayer)) {
+            if (PluginCompatibilityRegistry.CITIZENS.shouldRedirectToMainThread(self, serverPlayer)) {
                 ((IMixinChunkMapAccess) (Object) ((ServerLevel) serverPlayer.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
                     this.updatePlayer(serverPlayer)
                 );
@@ -153,5 +156,16 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @SuppressWarnings("EmptyMethod")
         @Redirect(method = "updatePlayer", at = @At(value = "INVOKE", target = "Lorg/spigotmc/AsyncCatcher;catchOp(Ljava/lang/String;)V"))
         private void skipSpigotAsyncPlayerTrackerUpdate(String reason) {} // Mirai - we can update async
+
+        @Redirect(method = "updatePlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerEntity;addPairing(Lnet/minecraft/server/level/ServerPlayer;)V"))
+        private void handleTrainCartsPluginAddPairing(ServerEntity self, ServerPlayer serverPlayer) {
+            if (PluginCompatibilityRegistry.TRAIN_CARTS.shouldRedirectToMainThread((ChunkMap.TrackedEntity) (Object) this)) {
+                ((IMixinChunkMapAccess) (Object) ((ServerLevel) serverPlayer.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() ->
+                    self.addPairing(serverPlayer)
+                );
+            } else {
+                self.addPairing(serverPlayer);
+            }
+        }
     }
 }

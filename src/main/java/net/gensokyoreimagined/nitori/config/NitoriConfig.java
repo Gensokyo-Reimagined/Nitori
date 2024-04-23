@@ -33,6 +33,7 @@ package net.gensokyoreimagined.nitori.config;
 //import org.simpleyaml.configuration.file.YamlFile;
 //import org.simpleyaml.exceptions.InvalidConfigurationException;
 
+//TODO: everything lol
 public class NitoriConfig {
 
     /*

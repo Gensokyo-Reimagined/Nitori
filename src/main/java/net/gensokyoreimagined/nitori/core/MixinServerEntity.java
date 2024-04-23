@@ -40,7 +40,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -50,10 +49,6 @@ public abstract class MixinServerEntity {
     @Final
     @Shadow
     private Entity entity;
-
-    @Shadow
-    @Nullable
-    private List<SynchedEntityData.DataValue<?>> trackedDataValues;
 
     @Shadow
     public void sendPairingData(ServerPlayer serverplayer, Consumer<Packet<ClientGamePacketListener>> consumer) {

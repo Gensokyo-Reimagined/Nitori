@@ -15,7 +15,6 @@
 package net.gensokyoreimagined.nitori.core;
 
 import com.destroystokyo.paper.util.misc.PooledLinkedHashSets;
-import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;

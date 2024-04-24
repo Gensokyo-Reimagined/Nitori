@@ -14,7 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.compatibility;
 
-import com.mojang.logging.LogUtils;
+import net.gensokyoreimagined.nitori.util.NitoriUtil;
 import org.bukkit.Bukkit;
 
 import javax.annotation.Nonnull;
@@ -49,24 +49,17 @@ public abstract class BasePluginCompatibility {
         return pluginClassLoaders;
     }
 
+    private void logCompatibilityCheckFailureMessage(@Nonnull String problemFormat, @Nonnull Exception e) {
+        NitoriUtil.getPreferredLogger().error(NitoriUtil.makeLogMessage(problemFormat.formatted("`" + this.getClass().getName() + "`") + "! I'll assume the related plugin(s) will otherwise hang and always run on main. Please update my intel! Exception follows:\n" +
+                e));
+    }
+
     private void onPluginClassesNotFound(ReflectiveOperationException e) {
-        //TODO: move repeated text to generalized function
-        //TODO: Get mod name for prefix
-        LogUtils.getLogger().error(
-                "[Nitori] FAILED TO LOCATE CLASSES FOR `" + this.getClass().getName() + "`! I'll assume the related plugin(s) will otherwise hang and always run on main. Please update my intel!\n" +
-                        "[Nitori] Exception follows:\n" +
-                        e.toString()
-        );
+        logCompatibilityCheckFailureMessage("FAILED TO LOCATE CLASSES FOR %s", e);
     }
 
     private void onReferenceUseFailure(CompletionException e) {
-        //TODO: move repeated text to generalized function
-        //TODO: Get mod name for prefix
-        LogUtils.getLogger().error(
-                "[Nitori] FAILED TO USE REFLECTED REFERENCES FOR `" + this.getClass().getName() + "`! I'll assume the related plugin(s) will otherwise hang and always run on main. Please update my intel!\n" +
-                        "[Nitori] Exception follows:\n" +
-                        e.toString()
-        );
+        logCompatibilityCheckFailureMessage("FAILED TO USE REFLECTED REFERENCES FOR %s!", e);
     }
 
     protected abstract void collectReferences(@Nonnull Map<String, ClassLoader> pluginClassLoaders) throws ReflectiveOperationException;
@@ -74,33 +67,27 @@ public abstract class BasePluginCompatibility {
     boolean completePluginCompatibilityCondition(BooleanSupplier conditionCallback) {
         synchronized (this) { // compatibility classes are singletons so syncing on itself is safe
             if (!this.reflectionResolutionAttempted.getAcquire()) {
-                var thisClassName = this.getClass().getName();
                 var pluginClassLoaders = collectPluginClassLoaders();
                 if (pluginClassLoaders == null) {
                     return false;
                 }
+                var thisClassName = this.getClass().getSimpleName();
+                NitoriUtil.getPreferredLogger().info(NitoriUtil.makeLogMessage("Resolving reflection references for " + thisClassName + "."));
                 try {
-                    //TODO: move repeated text to generalized function
-                    //TODO: Get mod name for prefix
-                    LogUtils.getLogger().info("[Nitori] Resolving reflection references for " + thisClassName + ".");
                     collectReferences(pluginClassLoaders);
-                    //TODO: move repeated text to generalized function
-                    //TODO: Get mod name for prefix
-                    LogUtils.getLogger().info("[Nitori] Resolved reflection references for " + thisClassName + ".");
                 } catch (ReflectiveOperationException e) {
                     onPluginClassesNotFound(e);
                     return true;
                 } finally {
                     this.reflectionResolutionAttempted.setRelease(true);
                 }
+                NitoriUtil.getPreferredLogger().info(NitoriUtil.makeLogMessage("Resolved reflection references for " + thisClassName + "."));
             }
         }
         try {
             return conditionCallback.getAsBoolean();
         } catch (IllegalStateException e) {
-            //TODO: move to generalized function
-            //TODO: Get mod name for prefix
-            LogUtils.getLogger().error("[Nitori] Hey, could you not forget to tell me how to resolve the reflection references??");
+            NitoriUtil.getPreferredLogger().error(NitoriUtil.makeLogMessage("Hey, could you not forget to inform me on how to resolve the reflection references??"));
             throw e;
         } catch (CompletionException e) {
             onReferenceUseFailure(e);

@@ -14,10 +14,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.access;
 
-import org.spongepowered.asm.mixin.Unique;
-
-import javax.annotation.Nullable;
-
 public interface IMixinChunkMapAccess {
     void gensouHacks$runOnTrackerMainThread(final Runnable runnable);
 }

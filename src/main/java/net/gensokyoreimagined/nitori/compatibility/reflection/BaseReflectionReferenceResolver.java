@@ -36,6 +36,7 @@ public abstract class BaseReflectionReferenceResolver<T> {
         return this.resolution;
     }
 
+    @Nonnull
     protected static Class<?> resolveClass(ClassLoader classLoader, String classPath) throws ClassNotFoundException {
         return Class.forName(classPath, false, classLoader);
     }

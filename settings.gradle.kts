@@ -12,4 +12,4 @@ plugins {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "GensouHacks"
+rootProject.name = "Nitori"

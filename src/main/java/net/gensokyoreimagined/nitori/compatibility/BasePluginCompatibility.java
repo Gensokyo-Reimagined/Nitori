@@ -40,7 +40,7 @@ public abstract class BasePluginCompatibility {
     /**
      * Whether the compatibility class has attempted to resolve the reflection references yet or not.
      */
-    private final AtomicBoolean reflectionResolutionAttempted = new AtomicBoolean(false);
+    private boolean reflectionResolutionAttempted = false;
 
     /**
      * Define a new compatibility class.
@@ -112,7 +112,7 @@ public abstract class BasePluginCompatibility {
      */
     boolean completePluginCompatibilityCondition(BooleanSupplier conditionCallback) {
         synchronized (this) { // compatibility classes are singletons so syncing on itself is safe
-            if (!this.reflectionResolutionAttempted.getAcquire()) {
+            if (!this.reflectionResolutionAttempted) {
                 var pluginClassLoaders = collectPluginClassLoaders();
                 if (pluginClassLoaders == null) {
                     return false;
@@ -125,7 +125,7 @@ public abstract class BasePluginCompatibility {
                     onPluginClassesNotFound(e);
                     return true;
                 } finally {
-                    this.reflectionResolutionAttempted.setRelease(true);
+                    this.reflectionResolutionAttempted = true;
                 }
                 NitoriUtil.getPreferredLogger().info(NitoriUtil.makeLogMessage("Resolved reflection references for " + thisClassName + "."));
             }

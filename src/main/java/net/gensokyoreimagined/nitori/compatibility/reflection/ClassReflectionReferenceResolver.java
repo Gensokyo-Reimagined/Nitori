@@ -12,8 +12,26 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.access;
+package net.gensokyoreimagined.nitori.compatibility.reflection;
 
-public interface IMixinChunkMapAccess {
-    void gensouHacks$runOnTrackerMainThread(final Runnable runnable);
+import org.jetbrains.annotations.NotNull;
+
+public class ClassReflectionReferenceResolver extends BaseReflectionReferenceResolver<Class<?>> {
+
+    private final String classPath;
+
+    /**
+     * Creates a new class resolver.
+     * @param classPath The path of the class.
+     */
+    public ClassReflectionReferenceResolver(String classPath) {
+        this.classPath = classPath;
+    }
+
+
+    @Override
+    @NotNull
+    protected Class<?> resolve(ClassLoader classLoader) throws ClassNotFoundException {
+        return resolveClass(classLoader, this.classPath);
+    }
 }

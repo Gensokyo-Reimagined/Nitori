@@ -26,6 +26,12 @@ public class MethodReflectionReferenceResolver extends BaseReflectionReferenceRe
 
     private final Class<?>[] methodParameterClasses;
 
+    /**
+     * Creates a new method resolver.
+     * @param classPath The path of the class containing the method.
+     * @param methodName The name of the method.
+     * @param methodParameterClasses The classes of the parameter types of the method, per parameter, in order.
+     */
     public MethodReflectionReferenceResolver(String classPath, String methodName, Class<?>... methodParameterClasses) {
         this.classPath = classPath;
         this.methodName = methodName;

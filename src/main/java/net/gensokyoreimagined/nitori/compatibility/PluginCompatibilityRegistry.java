@@ -14,9 +14,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.compatibility;
 
+/**
+ * Stores and provides access to all plugin compatibility instances.
+ */
 public class PluginCompatibilityRegistry {
 
+    /**
+     * Instance for Citizens compatibility.
+     */
     public static final PluginCompatibilityCitizens CITIZENS = new PluginCompatibilityCitizens();
 
+    /**
+     * Instance for Train Carts compatibility.
+     */
     public static final PluginCompatibilityTrainCarts TRAIN_CARTS = new PluginCompatibilityTrainCarts();
 }

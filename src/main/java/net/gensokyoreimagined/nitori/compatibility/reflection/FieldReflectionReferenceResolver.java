@@ -24,6 +24,11 @@ public class FieldReflectionReferenceResolver extends BaseReflectionReferenceRes
 
     private final String fieldName;
 
+    /**
+     * Creates a new field resolver.
+     * @param classPath The path of the class containing the field.
+     * @param fieldName the name of the field.
+     */
     public FieldReflectionReferenceResolver(String classPath, String fieldName) {
         this.classPath = classPath;
         this.fieldName = fieldName;

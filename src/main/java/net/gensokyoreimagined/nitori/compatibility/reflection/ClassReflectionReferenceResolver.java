@@ -20,6 +20,10 @@ public class ClassReflectionReferenceResolver extends BaseReflectionReferenceRes
 
     private final String classPath;
 
+    /**
+     * Creates a new class resolver.
+     * @param classPath The path of the class.
+     */
     public ClassReflectionReferenceResolver(String classPath) {
         this.classPath = classPath;
     }

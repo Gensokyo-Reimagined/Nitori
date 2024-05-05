@@ -25,16 +25,35 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 
+/**
+ * Base class for plugin compatibility. Defines common functions for evaluating plugin compatibility conditions.
+ * Any given instance of a subclass should always be a singleton. See {@link net.gensokyoreimagined.nitori.compatibility.PluginCompatibilityRegistry}
+ */
 public abstract class BasePluginCompatibility {
 
+    /**
+     * List of plugin names required by this compatibility class. The names in this list are to be the same used in
+     * the plugin.yml files in their respective plugins.
+     */
     private final String[] pluginNames;
 
+    /**
+     * Whether the compatibility class has attempted to resolve the reflection references yet or not.
+     */
     private final AtomicBoolean reflectionResolutionAttempted = new AtomicBoolean(false);
 
+    /**
+     * Define a new compatibility class.
+     * @param pluginNames See {@link net.gensokyoreimagined.nitori.compatibility.BasePluginCompatibility#pluginNames}
+     */
     protected BasePluginCompatibility(String[] pluginNames) {
         this.pluginNames = pluginNames;
     }
 
+    /**
+     * Finds the class loaders for the plugins needed for this compatibility class.
+     * @return The class loaders for the plugins needed for this compatibility class.
+     */
     @Nullable
     private Map<String, ClassLoader> collectPluginClassLoaders() {
         var pluginManager = Bukkit.getPluginManager();
@@ -49,21 +68,48 @@ public abstract class BasePluginCompatibility {
         return pluginClassLoaders;
     }
 
+    /**
+     * Logs a message for when checking a compatibility condition fails.
+     * @param problemFormat The format String to be used for explaining the problem. Requires one `%s` for the class name.
+     * @param e The exception thrown by the check failure.
+     */
     private void logCompatibilityCheckFailureMessage(@Nonnull String problemFormat, @Nonnull Exception e) {
         NitoriUtil.getPreferredLogger().error(NitoriUtil.makeLogMessage(problemFormat.formatted("`" + this.getClass().getName() + "`") + "! I'll assume the related plugin(s) will otherwise hang and always run on main. Please update my intel! Exception follows:\n" +
                 e));
     }
 
+    /**
+     * What to do when the plugin classes are not found.
+     * @param e The exception thrown by the plugin classes not being found.
+     */
     private void onPluginClassesNotFound(ReflectiveOperationException e) {
         logCompatibilityCheckFailureMessage("FAILED TO LOCATE CLASSES FOR %s", e);
     }
 
+    /**
+     * What to do when attempting to use the plugin reflection references fails.
+     * @param e The exception thrown by an attempt to use a plugin reflection reference fails.
+     */
     private void onReferenceUseFailure(CompletionException e) {
         logCompatibilityCheckFailureMessage("FAILED TO USE REFLECTED REFERENCES FOR %s!", e);
     }
 
+    /**
+     * Resolves and caches plugin reflection references.
+     * @param pluginClassLoaders The plugin class loaders used to resolve the reflection references.
+     * @throws ReflectiveOperationException If something went wrong finding the resolutions for reflection references.
+     */
     protected abstract void collectReferences(@Nonnull Map<String, ClassLoader> pluginClassLoaders) throws ReflectiveOperationException;
 
+    /**
+     * Fullfills a plugin compatibility boolean condition.
+     * @param conditionCallback The function used to ultimately determine if the condition passes or fails.
+     *                          The condition callback may throw an {@link IllegalStateException} if the reflection references have not yet been resolved.
+     * @return If the necessary plugins aren't loaded, false.
+     *         Otherwise, if the reflection references failed to be resolved, or an unexpected exception is thrown by the condition callback, true.
+     *         Otherwise, the result of the condition callback.
+     * @throws IllegalStateException If the reflection references weren't resolved before calling the condition callback.
+     */
     boolean completePluginCompatibilityCondition(BooleanSupplier conditionCallback) {
         synchronized (this) { // compatibility classes are singletons so syncing on itself is safe
             if (!this.reflectionResolutionAttempted.getAcquire()) {

@@ -26,7 +26,7 @@ This plugin provides the following optimizations:
   - [ ] World tick scheduler
 - [x] Smarter statistics-ticking
 - [ ] Async Pathfinding
-- [ ] Multithreaded Tracker
+- [x] Multithreaded Tracker
 
 **NOTE: This mod may or may not alter the default behaviors of some mob AI.**
 

@@ -25,6 +25,7 @@
     "MixinSpongeSIMD",
     "MixinWorldGenRegion",
     "ChunkMapMixin",
-    "ChunkMapMixin$TrackedEntity"
+    "ChunkMapMixin$TrackedEntity",
+    "MixinReobfServer"
   ]
 }

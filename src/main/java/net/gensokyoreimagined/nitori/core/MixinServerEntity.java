@@ -82,7 +82,7 @@ public abstract class MixinServerEntity {
 
     // Implementation of 0107-Multithreaded-Tracker.patch
     @Inject(method = "addPairing", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerEntity;entity:Lnet/minecraft/world/entity/Entity;", opcode = Opcodes.GETFIELD, shift = At.Shift.BEFORE))
-    private void invokeAddPairingSendOnMain(ServerPlayer serverplayer, CallbackInfo callbackInfo, @Local List<Packet<ClientGamePacketListener>> list) {
+    private void invokeAddPairingSendOnMain(ServerPlayer serverplayer, CallbackInfo callbackInfo, @Local List<Packet<? super ClientGamePacketListener>> list) {
         ((IMixinChunkMapAccess) (Object) ((ServerLevel) this.entity.level()).chunkSource.chunkMap).gensouHacks$runOnTrackerMainThread(() -> { // Mirai - main thread
             this.sendPairingData(serverplayer, list::add);
             serverplayer.connection.send(new ClientboundBundlePacket(list));

@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
       - name: Initialize caches
         uses: actions/cache@v3
         with:
@@ -31,6 +31,8 @@ jobs:
           key: ${{ runner.os }}-build-commit-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-build-commit-
+      - name: Gradle deez
+        uses: gradle/gradle-build-action@v3
       - name: Build artifacts
         run: ./gradlew clean :spotlessApply build
       - name: Upload artifacts
@@ -39,9 +41,7 @@ jobs:
           name: nitori-artifacts-${{ steps.ref.outputs.branch }}
           path: build/libs/*.jar
       - name: Reposilite upload
-        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-        with:
-          arguments: publish
+        run: ./gradlew publish
         env:
           USERNAME: ${{ secrets.ORG_GRADLE_PROJECT_GENSOREPOUSERNAME }}
           TOKEN: ${{ secrets.ORG_GRADLE_PROJECT_GENSOREPOPASSWORD }}

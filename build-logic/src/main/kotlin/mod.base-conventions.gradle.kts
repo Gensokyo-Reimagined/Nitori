@@ -1,7 +1,7 @@
 plugins {
   `java-library`
 
-  id("com.github.johnrengelman.shadow")
+  id("io.github.goooler.shadow")
   id("io.papermc.paperweight.userdev")
   id("com.diffplug.spotless")
   id("maven-publish")
@@ -11,7 +11,7 @@ plugins {
 val libs = extensions.getByType(org.gradle.accessors.dm.LibrariesForLibs::class)
 
 java {
-  javaTarget(17)
+  javaTarget(21)
   withSourcesJar()
 }
 

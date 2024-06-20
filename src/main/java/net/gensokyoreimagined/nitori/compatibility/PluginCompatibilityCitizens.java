@@ -24,9 +24,9 @@ import java.util.Map;
 public final class PluginCompatibilityCitizens extends BasePluginCompatibility {
     private static final String CITIZENS_PLUGIN_NAME = "Citizens";
 
-    private static final ClassReflectionReferenceResolver citizensPluginCitizensEntityTrackerClassResolver = new ClassReflectionReferenceResolver("net.citizensnpcs.nms.v1_20_R3.util.CitizensEntityTracker");
+    private static final ClassReflectionReferenceResolver citizensPluginCitizensEntityTrackerClassResolver = new ClassReflectionReferenceResolver("net.citizensnpcs.nms.v1_20_R4.util.CitizensEntityTracker");
 
-    private static final ClassReflectionReferenceResolver citizensPluginEntityHumanNPCClassResolver = new ClassReflectionReferenceResolver("net.citizensnpcs.nms.v1_20_R3.entity.EntityHumanNPC");
+    private static final ClassReflectionReferenceResolver citizensPluginEntityHumanNPCClassResolver = new ClassReflectionReferenceResolver("net.citizensnpcs.nms.v1_20_R4.entity.EntityHumanNPC");
 
     PluginCompatibilityCitizens() {
         super(new String[]{CITIZENS_PLUGIN_NAME});

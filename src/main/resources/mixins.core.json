@@ -26,6 +26,9 @@
     "MixinWorldGenRegion",
     "ChunkMapMixin",
     "ChunkMapMixin$TrackedEntity",
-    "MixinReobfServer"
+    "MixinReobfServer",
+    "MixinLevelStorageAccess",
+    "MixinPlayerList",
+    "MixinCraftPlayer"
   ]
 }

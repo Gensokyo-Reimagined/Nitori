@@ -32,6 +32,6 @@
     "MixinWorldGenRegion",
     "alloc.ServerChunkManagerMixin",
     "alloc.StateMixin",
-    "alloc.WorldMixin"
+    "util.MixinLevelBlockEntityRetrieval"
   ]
 }

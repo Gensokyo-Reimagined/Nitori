@@ -1,5 +1,5 @@
-//package net.gensokyoreimagined.nitori.mixin.math.fast_util;
-//
+package net.gensokyoreimagined.nitori.mixin.math.fast_util;
+
 //import net.minecraft.core.Direction;
 //import net.minecraft.core.Direction.Axis;
 //import net.minecraft.util.RandomSource;

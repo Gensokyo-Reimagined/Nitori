@@ -29,6 +29,7 @@
     "MixinReobfServer",
     "MixinLevelStorageAccess",
     "MixinPlayerList",
-    "MixinCraftPlayer"
+    "MixinCraftPlayer",
+    "StateMixin"
   ]
 }

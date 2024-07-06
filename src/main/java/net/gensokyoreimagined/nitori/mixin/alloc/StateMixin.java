@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.mixin.alloc;
 
 import com.google.common.collect.Table;
 import net.gensokyoreimagined.nitori.common.state.FastImmutableTable;

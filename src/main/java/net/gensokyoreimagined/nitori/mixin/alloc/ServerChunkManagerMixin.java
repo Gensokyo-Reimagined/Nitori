@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.mixin.alloc;
 
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerChunkCache;

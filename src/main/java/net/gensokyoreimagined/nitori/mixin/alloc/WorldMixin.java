@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.mixin.alloc;
 
 import net.gensokyoreimagined.nitori.common.world.ChunkRandomSource;
 import net.minecraft.core.BlockPos;

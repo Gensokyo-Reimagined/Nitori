@@ -12,31 +12,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.mixin;
 
-import com.google.common.collect.Sets;
-import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.Util;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
-@Mixin(ServerBossEvent.class)
-public abstract class MixinServerBossEvent {    
+@Mixin(PlayerList.class)
+public class MixinPlayerList {
     @Final
-    @Mutable
     @Shadow
-	private Set<ServerPlayer> players;
+    public PlayerDataStorage playerIo;
 
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void reassignEntityTrackers(CallbackInfo ci) {
-        // Implementation of 0107-Multithreaded-Tracker.patch
-        this.players = Sets.newConcurrentHashSet(); // Mirai - players can be removed in async tracking
+    @Redirect(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/PlayerDataStorage;save(Lnet/minecraft/world/entity/player/Player;)V"))
+    private void gensouHacks$savePlayerData(PlayerDataStorage instance, Player player) {
+        Runnable writeRunnable = () -> playerIo.save(player);
+
+        var ioExecutor = Util.backgroundExecutor();
+        CompletableFuture.runAsync(writeRunnable, ioExecutor);
     }
 }

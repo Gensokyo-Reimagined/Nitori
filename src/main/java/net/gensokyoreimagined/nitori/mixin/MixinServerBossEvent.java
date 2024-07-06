@@ -12,12 +12,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.mixin;
 
-import com.google.common.collect.Lists;
-import net.gensokyoreimagined.nitori.common.util.collections.HashedReferenceList;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
+import com.google.common.collect.Sets;
+import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -26,24 +25,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+import java.util.Set;
 
-@Mixin(Level.class)
-public class MixinLevel {
-    // Implementation of 0006-lithium-HashedReferenceList.patch
+@Mixin(ServerBossEvent.class)
+public abstract class MixinServerBossEvent {    
+    @Final
     @Mutable
-    @Final @Shadow
-    public List<TickingBlockEntity> blockEntityTickers;
+    @Shadow
+	private Set<ServerPlayer> players;
 
-    // Implementation of 0006-lithium-HashedReferenceList.patch
-    @Mutable
-    @Final @Shadow
-    private List<TickingBlockEntity> pendingBlockEntityTickers;
-
-    // Implementation of 0006-lithium-HashedReferenceList.patch
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(CallbackInfo ci) {
-        this.blockEntityTickers = new HashedReferenceList<>(Lists.newArrayList());
-        this.pendingBlockEntityTickers = new HashedReferenceList<>(Lists.newArrayList());
+    private void reassignEntityTrackers(CallbackInfo ci) {
+        // Implementation of 0107-Multithreaded-Tracker.patch
+        this.players = Sets.newConcurrentHashSet(); // Mirai - players can be removed in async tracking
     }
 }

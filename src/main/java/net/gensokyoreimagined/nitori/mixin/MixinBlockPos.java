@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.core;
+package net.gensokyoreimagined.nitori.mixin;
 
 import it.unimi.dsi.fastutil.longs.LongList;
 import net.gensokyoreimagined.nitori.cached_blockpos_iteration.IterateOutwardsCache;

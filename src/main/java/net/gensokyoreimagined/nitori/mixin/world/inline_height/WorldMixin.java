@@ -1,5 +1,5 @@
-//package net.gensokyoreimagined.nitori.mixin.world.inline_height;
-//
+package net.gensokyoreimagined.nitori.mixin.world.inline_height;
+
 //import net.minecraft.core.RegistryAccess;
 //import net.minecraft.resources.ResourceKey;
 //import net.minecraft.core.Holder;

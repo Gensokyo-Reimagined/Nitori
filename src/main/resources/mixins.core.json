@@ -37,6 +37,9 @@
     "shapes.blockstate_cache.BlockMixin",
     "world.inline_height.WorldChunkMixin",
     "math.fast_blockops.DirectionMixin",
-    "math.fast_blockops.BlockPosMixin"
+    "math.fast_blockops.BlockPosMixin",
+    "math.fast_util.AxisCycleDirectionMixin.BackwardMixin",
+    "math.fast_util.AxisCycleDirectionMixin.ForwardMixin",
+    "math.fast_util.BoxMixin"
   ]
 }

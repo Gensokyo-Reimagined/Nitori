@@ -31,6 +31,7 @@
     "MixinPlayerList",
     "MixinCraftPlayer",
     "StateMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "ServerChunkManagerMixin"
   ]
 }

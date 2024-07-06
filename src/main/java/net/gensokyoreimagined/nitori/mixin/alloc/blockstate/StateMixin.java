@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.mixin.alloc;
+package net.gensokyoreimagined.nitori.mixin.alloc.blockstate;
 
 import com.google.common.collect.Table;
 import net.gensokyoreimagined.nitori.common.state.FastImmutableTable;

@@ -30,8 +30,8 @@
     "MixinServerEntity",
     "MixinSpongeSIMD",
     "MixinWorldGenRegion",
-    "alloc.ServerChunkManagerMixin",
-    "alloc.StateMixin",
+    "alloc.chunk_ticking.ServerChunkManagerMixin",
+    "alloc.blockstate.StateMixin",
     "util.MixinLevelBlockEntityRetrieval",
     "cached_hashcode.BlockNeighborGroupMixin",
     "shapes.blockstate_cache.BlockMixin"

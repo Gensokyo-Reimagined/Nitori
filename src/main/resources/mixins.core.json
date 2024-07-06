@@ -33,8 +33,5 @@
     "alloc.ServerChunkManagerMixin",
     "alloc.StateMixin",
     "alloc.WorldMixin"
-  ],
-  "mixins": [
-    "util.BlockEntityRetrieval_WorldMixin"
   ]
 }

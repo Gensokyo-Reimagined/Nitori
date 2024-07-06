@@ -32,6 +32,8 @@
     "MixinWorldGenRegion",
     "alloc.ServerChunkManagerMixin",
     "alloc.StateMixin",
-    "util.MixinLevelBlockEntityRetrieval"
+    "util.MixinLevelBlockEntityRetrieval",
+    "cached_hashcode.BlockNeighborGroupMixin",
+    "shapes.blockstate_cache.BlockMixin"
   ]
 }

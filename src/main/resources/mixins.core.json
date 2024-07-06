@@ -30,6 +30,7 @@
     "MixinLevelStorageAccess",
     "MixinPlayerList",
     "MixinCraftPlayer",
-    "StateMixin"
+    "StateMixin",
+    "WorldMixin"
   ]
 }

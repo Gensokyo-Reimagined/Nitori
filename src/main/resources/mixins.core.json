@@ -34,6 +34,9 @@
     "alloc.blockstate.StateMixin",
     "util.MixinLevelBlockEntityRetrieval",
     "cached_hashcode.BlockNeighborGroupMixin",
-    "shapes.blockstate_cache.BlockMixin"
+    "shapes.blockstate_cache.BlockMixin",
+    "world.inline_height.WorldChunkMixin",
+    "math.fast_blockops.DirectionMixin",
+    "math.fast_blockops.BlockPosMixin"
   ]
 }

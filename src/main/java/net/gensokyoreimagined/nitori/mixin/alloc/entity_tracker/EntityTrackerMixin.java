@@ -1,4 +1,4 @@
-//package net.gensokyoreimagined.nitori.mixin.alloc;
+//package net.gensokyoreimagined.nitori.mixin.alloc.entity_tracker;
 //
 //import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 //import net.minecraft.server.network.ServerPlayerConnection;
@@ -7,24 +7,23 @@
 //import org.spongepowered.asm.mixin.injection.At;
 //import org.spongepowered.asm.mixin.injection.Redirect;
 //
-//import java.util.Set;
-//
 //@Mixin(ChunkMap.TrackedEntity.class)
 //public class EntityTrackerMixin {
 //
 //    /**
-//     * Uses less memory, and will cache the returned iterator.
+//     * Uses less memory and will cache the returned iterator.
 //     */
 //    @Redirect(
 //            method = "<init>",
-//            require = 0,
 //            at = @At(
-//                    value = "INVOKE",
-//                    target = "Lit/unimi/dsi/fastutil/objects/ReferenceOpenHashSet;<init>()V",
+//                    value = "NEW",
+//                    target = "it/unimi/dsi/fastutil/objects/ReferenceOpenHashSet",
 //                    remap = false
 //            )
 //    )
-//    private Set<ServerPlayerConnection> useFasterCollection() {
+//    private ReferenceOpenHashSet<ServerPlayerConnection> useFasterCollection() {
 //        return new ReferenceOpenHashSet<>();
 //    }
 //}
+
+//paper has this

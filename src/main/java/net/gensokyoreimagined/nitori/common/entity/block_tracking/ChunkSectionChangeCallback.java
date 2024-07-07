@@ -45,7 +45,7 @@ public final class ChunkSectionChangeCallback {
         Long2ReferenceOpenHashMap<ChunkSectionChangeCallback> changeCallbacks = ((LithiumData) world).lithium$getData().chunkSectionChangeCallbacks();
         ChunkSectionChangeCallback previous = changeCallbacks.put(sectionPos, chunkSectionChangeCallback);
         if (previous != null) {
-            previous.onChunkSectionInvalidated(SectionPos.from(sectionPos));
+            previous.onChunkSectionInvalidated(SectionPos.of(sectionPos));
         }
         return chunkSectionChangeCallback;
     }

@@ -4,7 +4,7 @@ import net.gensokyoreimagined.nitori.common.block.*;
 import net.gensokyoreimagined.nitori.common.entity.block_tracking.ChunkSectionChangeCallback;
 import net.gensokyoreimagined.nitori.common.entity.block_tracking.SectionedBlockChangeTracker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -91,7 +91,7 @@ public abstract class ChunkSectionMixin implements BlockCountingSection, BlockLi
     }
 
     @Inject(
-            method = "readDataPacket",
+            method = "read",
             at = @At(value = "HEAD")
     )
     private void resetData(FriendlyByteBuf buf, CallbackInfo ci) {
@@ -164,7 +164,7 @@ public abstract class ChunkSectionMixin implements BlockCountingSection, BlockLi
 
     @Override
     @Unique
-    public void lithium$invalidateListeningSection(ChunkSectionPos sectionPos) {
+    public void lithium$invalidateListeningSection(SectionPos sectionPos) {
         if (this.listeningMask != 0) {
             this.changeListener.onChunkSectionInvalidated(sectionPos);
             this.listeningMask = 0;

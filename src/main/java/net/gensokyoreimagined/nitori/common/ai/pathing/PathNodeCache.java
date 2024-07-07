@@ -18,7 +18,7 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 
 public abstract class PathNodeCache {
     private static boolean isChunkSectionDangerousNeighbor(LevelChunkSection section) {
-        return section.getBlockStateContainer()
+        return section.get()
                 .hasAny(state -> getNeighborPathNodeType(state) != PathNodeType.OPEN);
     }
 

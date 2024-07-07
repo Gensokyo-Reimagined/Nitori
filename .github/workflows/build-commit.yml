@@ -34,7 +34,7 @@ jobs:
       - name: Gradle deez
         uses: gradle/gradle-build-action@v3
       - name: Build artifacts
-        run: ./gradlew clean :spotlessApply build
+        run: ./gradlew clean build
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:

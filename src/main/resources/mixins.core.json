@@ -36,6 +36,7 @@
     "cached_hashcode.BlockNeighborGroupMixin",
     "shapes.blockstate_cache.BlockMixin",
     "math.fast_blockops.DirectionMixin",
-    "math.fast_blockops.BlockPosMixin"
+    "math.fast_blockops.BlockPosMixin",
+    "ai.sensor.secondary_poi.SecondaryPointsOfInterestSensorMixin",
   ]
 }

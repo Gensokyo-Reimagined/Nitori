@@ -37,4 +37,36 @@ tasks {
   build {
     dependsOn(reobfJar)
   }
+
+
+  var jarFile = file("build/libs/%s-%s.jar".format(project.name, project.version))
+  var jarArtifact = artifacts.add("default", jarFile) {
+    type = "jar"
+    builtBy("jar")
+  }
+
+  publishing {
+    publications {
+      create<MavenPublication>("mavenJava") {
+        artifact(jarArtifact)
+        group = "plugins"
+      }
+    }
+
+    repositories {
+      maven {
+        name = "gensorepo"
+        credentials {
+          username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+          password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+        }
+        // url to the releases maven repository
+        url = uri("https://repo.gensokyoreimagined.net/")
+      }
+    }
+  }
+
+  tasks.named("publishMavenJavaPublicationToGensorepoRepository") {
+    dependsOn("reobfJar")
+  }
 }

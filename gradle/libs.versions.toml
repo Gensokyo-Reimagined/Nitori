@@ -20,3 +20,4 @@ mixinExtras = { group = "io.github.llamalad7", name = "mixinextras-common", vers
 
 build-paperweight = { module = "io.papermc.paperweight.userdev:io.papermc.paperweight.userdev.gradle.plugin", version.ref = "paperweight" }
 build-shadow = { module = "io.github.goooler:shadow", version.ref = "shadow" }
+build-spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }

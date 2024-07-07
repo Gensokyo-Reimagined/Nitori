@@ -15,15 +15,16 @@ This plugin provides the following optimizations:
   - [x] Store gamerules in fastutil hashmap
   - [ ] Precompute shape arrays
   - [ ] Collections.attributes
-  - [ ] Collections.entity_by_type 
-  - [ ] Collections.entity_filtering 
+  - [x] Collections.entity_by_type 
+  - [x] Collections.entity_filtering 
   - [ ] Chunk serialization
   - [x] Cache iterate outwards
   - [ ] Block moving block shapes
-  - [ ] Shapes blockstate cache
+  - [x] Shapes blockstate cache
   - [x] Lithium gen
-  - [ ] Ai sensor secondary POI
+  - [x] Ai sensor secondary POI
   - [ ] World tick scheduler
+  - [ ] TileEntity Tracking
 - [x] Smarter statistics-ticking
 - [ ] Async Pathfinding
 - [x] Multithreaded Tracker

@@ -11,13 +11,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.level.pathfinder.BinaryHeap;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 
 public abstract class PathNodeCache {
-    private static boolean isChunkSectionDangerousNeighbor(ChunkSection section) {
+    private static boolean isChunkSectionDangerousNeighbor(LevelChunkSection section) {
         return section.getBlockStateContainer()
                 .hasAny(state -> getNeighborPathNodeType(state) != PathNodeType.OPEN);
     }
@@ -38,9 +38,9 @@ public abstract class PathNodeCache {
      * @return True if this neighboring section is free of any dangers, otherwise false if it could
      * potentially contain dangers
      */
-    public static boolean isSectionSafeAsNeighbor(ChunkSection section) {
+    public static boolean isSectionSafeAsNeighbor(LevelChunkSection section) {
         // Empty sections can never contribute a danger
-        if (section.isEmpty()) {
+        if (section.hasOnlyAir()) {
             return true;
         }
 
@@ -52,9 +52,9 @@ public abstract class PathNodeCache {
 
 
     public static PathNodeType getNodeTypeFromNeighbors(BinaryHeap context, int x, int y, int z, PathNodeType fallback) {
-        BlockView world = context.getWorld();
+        BlockGetter world = context.getWorld();
 
-        ChunkSection section = null;
+        LevelChunkSection section = null;
 
         // Check that all the block's neighbors are within the same chunk column. If so, we can isolate all our block
         // reads to just one chunk and avoid hits against the server chunk manager.
@@ -62,12 +62,12 @@ public abstract class PathNodeCache {
             // If the y-coordinate is within bounds, we can cache the chunk section. Otherwise, the if statement to check
             // if the cached chunk section was initialized will early-exit.
             if (!world.isOutOfHeightLimit(y)) {
-                Chunk chunk = chunkView.lithium$getLoadedChunk(Pos.ChunkCoord.fromBlockCoord(x), Pos.ChunkCoord.fromBlockCoord(z));
+                ChunkAccess chunk = chunkView.lithium$getLoadedChunk(Pos.ChunkCoord.fromBlockCoord(x), Pos.ChunkCoord.fromBlockCoord(z));
 
                 // If the chunk is absent, the cached section above will remain null, as there is no chunk section anyway.
                 // An empty chunk or section will never pose any danger sources, which will be caught later.
                 if (chunk != null) {
-                    section = chunk.getSectionArray()[Pos.SectionYIndex.fromBlockCoord(world, y)];
+                    section = chunk.getSections()[Pos.SectionYIndex.fromBlockCoord(world, y)];
                 }
             }
 

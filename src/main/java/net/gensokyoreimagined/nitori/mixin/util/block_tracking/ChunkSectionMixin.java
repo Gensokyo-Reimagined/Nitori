@@ -1,6 +1,6 @@
 package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 
-import me.jellysquid.mods.lithium.common.block.*;
+import net.gensokyoreimagined.nitori.common.block.*;
 import net.gensokyoreimagined.nitori.common.entity.block_tracking.ChunkSectionChangeCallback;
 import net.gensokyoreimagined.nitori.common.entity.block_tracking.SectionedBlockChangeTracker;
 import net.minecraft.world.level.block.state.BlockState;

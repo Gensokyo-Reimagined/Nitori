@@ -46,6 +46,7 @@
     "math.fast_util.DirectionMixin",
     "collections.entity_filtering.TypeFilterableListMixin",
     "collections.entity_by_type.TypeFilterableListMixin",
+    "collections.chunk_tickets.SortedArraySetMixin",
     "collections.block_entity_tickers.WorldChunkMixin",
     "world.block_entity_ticking.sleeping.WrappedBlockEntityTickInvokerAccessor",
     "world.block_entity_ticking.sleeping.campfire.CampfireBlockEntityMixin",
@@ -55,6 +56,6 @@
     "util.accessors.ClientEntityManagerAccessor",
     "util.accessors.EntityTrackingSectionAccessor",
     "util.accessors.ServerEntityManagerAccessor",
-    "util.block_tracking.AbstractBlockStateMixin",
+    "util.block_tracking.AbstractBlockStateMixin"
   ]
 }

@@ -58,6 +58,7 @@
     "util.accessors.ClientEntityManagerAccessor",
     "util.accessors.EntityTrackingSectionAccessor",
     "util.accessors.ServerEntityManagerAccessor",
-    "util.block_tracking.AbstractBlockStateMixin"
+    "util.block_tracking.AbstractBlockStateMixin",
+    "MixinEntityTickList"
   ]
 }

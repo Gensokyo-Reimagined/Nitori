@@ -45,6 +45,8 @@
     "math.fast_util.AxisCycleDirectionMixin$BackwardMixin",
     "math.fast_util.DirectionMixin",
     "math.vec.FastMathVec3DMixin",
+    "math.general.GenericFastMathMixin",
+    "math.intrinsic.MathHelperIntrinsicMixin",
     "collections.entity_filtering.TypeFilterableListMixin",
     "collections.entity_by_type.TypeFilterableListMixin",
     "collections.chunk_tickets.SortedArraySetMixin",

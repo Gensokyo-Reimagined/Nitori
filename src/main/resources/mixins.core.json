@@ -56,6 +56,5 @@
     "util.accessors.EntityTrackingSectionAccessor",
     "util.accessors.ServerEntityManagerAccessor",
     "util.block_tracking.AbstractBlockStateMixin",
-    "util.block_tracking.ChunkSectionMixin"
   ]
 }

@@ -51,6 +51,11 @@
     "world.block_entity_ticking.sleeping.campfire.CampfireBlockEntityMixin",
     "world.block_entity_ticking.sleeping.campfire.unlit.CampfireBlockEntityMixin",
     "world.block_entity_ticking.sleeping.campfire.lit.CampfireBlockEntityMixin",
-    "world.block_entity_ticking.sleeping.furnace.AbstractFurnaceBlockEntityMixin"
+    "world.block_entity_ticking.sleeping.furnace.AbstractFurnaceBlockEntityMixin",
+    "util.accessors.ClientEntityManagerAccessor",
+    "util.accessors.EntityTrackingSectionAccessor",
+    "util.accessors.ServerEntityManagerAccessor",
+    "util.block_tracking.AbstractBlockStateMixin",
+    "util.block_tracking.ChunkSectionMixin"
   ]
 }

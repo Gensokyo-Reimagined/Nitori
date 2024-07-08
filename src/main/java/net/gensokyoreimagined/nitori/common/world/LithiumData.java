@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.gensokyoreimagined.nitori.common.entity.block_tracking.ChunkSectionChangeCallback;
 import net.gensokyoreimagined.nitori.common.entity.block_tracking.SectionedBlockChangeTracker;
-import net.gensokyoreimagined.nitori.common.block.entity.movement_tracker.SectionedEntityMovementTracker;
+import net.gensokyoreimagined.nitori.common.entity.movement_tracker.SectionedEntityMovementTracker;
 import net.gensokyoreimagined.nitori.common.util.deduplication.LithiumInterner;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +42,7 @@ public interface LithiumData {
         public Data(Level world) {
             this(
                     new Long2ReferenceOpenHashMap<>(),
-                    world.registryAccess().getOptionalWrapper(Registries.BANNER_PATTERN).map(Raid::getOminousBanner).orElse(null),
+                    world.registryAccess().lookup(Registries.BANNER_PATTERN).map(Raid::getLeaderBannerInstance).orElse(null),
                     new ReferenceOpenHashSet<>(),
                     new LithiumInterner<>(),
                     new LithiumInterner<>(),

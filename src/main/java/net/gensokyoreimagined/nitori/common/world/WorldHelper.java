@@ -1,18 +1,17 @@
 package net.gensokyoreimagined.nitori.common.world;
 
-import net.gensokyoreimagined.nitori.common.client.ClientWorldAccessor;
 import net.gensokyoreimagined.nitori.common.entity.EntityClassGroup;
 import net.gensokyoreimagined.nitori.common.entity.pushable.EntityPushablePredicate;
+import net.gensokyoreimagined.nitori.mixin.util.accessors.ClientEntityManagerAccessor;
+import net.gensokyoreimagined.nitori.mixin.util.accessors.EntityTrackingSectionAccessor;
+import net.gensokyoreimagined.nitori.mixin.util.accessors.ServerEntityManagerAccessor;
 import net.gensokyoreimagined.nitori.common.world.chunk.ClassGroupFilterableList;
-import net.gensokyoreimagined.nitori.common.util.accessors.ClientEntityManagerAccessor;
-import net.gensokyoreimagined.nitori.common.util.accessors.EntityTrackingSectionAccessor;
-import net.gensokyoreimagined.nitori.common.util.accessors.ServerEntityManagerAccessor;
-import net.gensokyoreimagined.nitori.common.util.accessors.ServerWorldAccessor;
+import net.gensokyoreimagined.nitori.mixin.util.accessors.ServerWorldAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ClassInstanceMultiMap;
 import net.minecraft.util.AbortableIterationConsumer;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.level.EntityGetter
+import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.entity.EntitySectionStorage;
@@ -29,7 +28,7 @@ public class WorldHelper {
      * Partial [VanillaCopy]
      * The returned entity iterator is only used for collision interactions. As most entities do not collide with other
      * entities (cramming is different), getting them is not necessary. This is why we only get entities when they override
-     * {@link Entity#isCollidable()} if the reference entity does not override {@link Entity#collidesWith(Entity)}.
+     * {@link Entity#canBeCollidedWith()} if the reference entity does not override {@link Entity#canCollideWith(Entity)}.
      * Note that the returned iterator contains entities that override these methods. This does not mean that these methods
      * always return true.
      *
@@ -42,13 +41,13 @@ public class WorldHelper {
         if (!CUSTOM_TYPE_FILTERABLE_LIST_DISABLED && entityView instanceof Level world && (collidingEntity == null || !EntityClassGroup.CUSTOM_COLLIDE_LIKE_MINECART_BOAT_WINDCHARGE.contains(collidingEntity.getClass()))) {
             EntitySectionStorage<Entity> cache = getEntityCacheOrNull(world);
             if (cache != null) {
-                world.getProfiler().visit("getEntities");
+                world.getProfiler().incrementCounter("getEntities");
                 return getEntitiesOfClassGroup(cache, collidingEntity, EntityClassGroup.NoDragonClassGroup.BOAT_SHULKER_LIKE_COLLISION, box);
             }
         }
         //use vanilla code in case the shortcut is not applicable
         // due to the reference entity implementing special collision or the mixin being disabled in the config
-        return EntityGetter.getOtherEntities(collidingEntity, box);
+        return entityView.getEntities(collidingEntity, box);
     }
 
     public static List<Entity> getOtherEntitiesForCollision(EntityGetter entityView, AABB box, @Nullable Entity collidingEntity, Predicate<? super Entity> entityPredicate) {
@@ -56,34 +55,32 @@ public class WorldHelper {
             if (collidingEntity == null || !EntityClassGroup.CUSTOM_COLLIDE_LIKE_MINECART_BOAT_WINDCHARGE.contains(collidingEntity.getClass())) {
                 EntitySectionStorage<Entity> cache = getEntityCacheOrNull(world);
                 if (cache != null) {
-                    world.getProfiler().visit("getEntities");
+                    world.getProfiler().incrementCounter("getEntities");
                     return getEntitiesOfClassGroup(cache, collidingEntity, EntityClassGroup.NoDragonClassGroup.BOAT_SHULKER_LIKE_COLLISION, box);
                 }
             }
         }
         //use vanilla code in case the shortcut is not applicable
         // due to the reference entity implementing special collision or the mixin being disabled in the config
-        return entityView.getOtherEntities(collidingEntity, box, entityPredicate);
+        return entityView.getEntities(collidingEntity, box, entityPredicate);
     }
 
 
     //Requires util.accessors
     public static EntitySectionStorage<Entity> getEntityCacheOrNull(Level world) {
-        if (world instanceof ClientWorldAccessor) {
-            //noinspection unchecked
-            return ((ClientEntityManagerAccessor<Entity>) ((ClientWorldAccessor) world).lithium$getEntityManager()).getCache();
-        } else if (world instanceof ServerWorldAccessor) {
-            //noinspection unchecked
-            return ((ServerEntityManagerAccessor<Entity>) ((ServerWorldAccessor) world).getEntityManager()).getCache();
-        }
+        // Does not work on Paper...
+//        if (world instanceof ServerWorldAccessor) {
+//            //noinspection unchecked
+//            return ((ServerEntityManagerAccessor<Entity>) ((ServerWorldAccessor) world).getEntityManager()).getSectionStorage();
+//        }
         return null;
     }
 
     public static List<Entity> getEntitiesOfClassGroup(EntitySectionStorage<Entity> cache, Entity collidingEntity, EntityClassGroup.NoDragonClassGroup entityClassGroup, AABB box) {
         ArrayList<Entity> entities = new ArrayList<>();
-        cache.forEachInBox(box, section -> {
+        cache.forEachAccessibleNonEmptySection(box, section -> {
             //noinspection unchecked
-            ClassInstanceMultiMap<Entity> allEntities = ((EntityTrackingSectionAccessor<Entity>) section).getCollection();
+            ClassInstanceMultiMap<Entity> allEntities = ((EntityTrackingSectionAccessor<Entity>) section).getStorage();
             //noinspection unchecked
             Collection<Entity> entitiesOfType = ((ClassGroupFilterableList<Entity>) allEntities).lithium$getAllOfGroupType(entityClassGroup);
             if (!entitiesOfType.isEmpty()) {
@@ -101,7 +98,7 @@ public class WorldHelper {
 
     public static List<Entity> getPushableEntities(Level world, EntitySectionStorage<Entity> cache, Entity except, AABB box, EntityPushablePredicate<? super Entity> entityPushablePredicate) {
         ArrayList<Entity> entities = new ArrayList<>();
-        cache.forEachInBox(box, section -> ((ClimbingMobCachingSection) section).lithium$collectPushableEntities(world, except, box, entityPushablePredicate, entities));
+        cache.forEachAccessibleNonEmptySection(box, section -> ((ClimbingMobCachingSection) section).lithium$collectPushableEntities(world, except, box, entityPushablePredicate, entities));
         return entities;
     }
 

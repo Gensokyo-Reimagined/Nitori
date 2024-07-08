@@ -7,10 +7,10 @@ import net.gensokyoreimagined.nitori.common.entity.FluidCachingEntity;
 import net.gensokyoreimagined.nitori.common.reflection.ReflectionUtil;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.level.chunk.LevelChunkSection
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathType;
 
 import java.util.ArrayList;
 
@@ -76,7 +76,7 @@ public class BlockStateFlags {
             WATER = new TrackedBlockStatePredicate(countingFlags.size()) {
                 @Override
                 public boolean test(BlockState operand) {
-                    return operand.getFluidState().getFluid().isIn(FluidTags.WATER);
+                    return operand.getFluidState().getType().is(FluidTags.WATER);
                 }
             };
             countingFlags.add(WATER);
@@ -84,7 +84,7 @@ public class BlockStateFlags {
             LAVA = new TrackedBlockStatePredicate(countingFlags.size()) {
                 @Override
                 public boolean test(BlockState operand) {
-                    return operand.getFluidState().getFluid().isIn(FluidTags.LAVA);
+                    return operand.getFluidState().getType().is(FluidTags.LAVA);
                 }
             };
             countingFlags.add(LAVA);
@@ -93,11 +93,11 @@ public class BlockStateFlags {
             LAVA = null;
         }
 
-        if (BlockStatePathingCache.class.isAssignableFrom(BlockBehaviour.BlockBehaviourState.class)) {
+        if (BlockStatePathingCache.class.isAssignableFrom(BlockBehaviour.BlockStateBase.class)) {
             PATH_NOT_OPEN = new TrackedBlockStatePredicate(countingFlags.size()) {
                 @Override
                 public boolean test(BlockState operand) {
-                    return PathNodeCache.getNeighborPathNodeType(operand) != PathNodeType.OPEN;
+                    return PathNodeCache.getNeighborPathType(operand) != PathType.OPEN;
                 }
             };
             countingFlags.add(PATH_NOT_OPEN);

@@ -9,13 +9,10 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.PalettedContainer;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import net.minecraft.world.level.material.FluidState;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -31,7 +28,7 @@ public abstract class ChunkSectionMixin implements BlockCountingSection, BlockLi
 
     @Shadow
     @Final
-    private PalettedContainer<BlockState> blockStateContainer;
+    public PalettedContainer<BlockState> states;
 
     @Unique
     private short[] countsByFlag = null;
@@ -63,7 +60,7 @@ public abstract class ChunkSectionMixin implements BlockCountingSection, BlockLi
     private void fastInitClientCounts() {
         this.countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
         for (TrackedBlockStatePredicate trackedBlockStatePredicate : BlockStateFlags.TRACKED_FLAGS) {
-            if (this.blockStateContainer.hasAny(trackedBlockStatePredicate)) {
+            if (this.states.maybeHas(trackedBlockStatePredicate)) {
                 //We haven't counted, so we just set the count so high that it never incorrectly reaches 0.
                 //For most situations, this overestimation does not hurt client performance compared to correct counting,
                 this.countsByFlag[trackedBlockStatePredicate.getIndex()] = 16 * 16 * 16;
@@ -71,23 +68,43 @@ public abstract class ChunkSectionMixin implements BlockCountingSection, BlockLi
         }
     }
 
-    @Redirect(
-            method = "calculateCounts()V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/chunk/PalettedContainer;count(Lnet/minecraft/world/chunk/PalettedContainer$Counter;)V"
-            )
-    )
-    private void initFlagCounters(PalettedContainer<BlockState> palettedContainer, PalettedContainer.Counter<BlockState> consumer) {
-        palettedContainer.count((state, count) -> {
-            consumer.accept(state, count);
+//    @Redirect(
+//            method = "recalcBlockCounts()V",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Lnet/minecraft/world/chunk/PalettedContainer;count(Lnet/minecraft/world/chunk/PalettedContainer$Counter;)V"
+//            )
+//    )
+//    private void initFlagCounters(PalettedContainer<BlockState> palettedContainer, PalettedContainer.Counter<BlockState> consumer) {
+//        palettedContainer.count((state, count) -> {
+//            consumer.accept(state, count);
+//            addToFlagCount(this.countsByFlag, state, (short) count);
+//        });
+//    }
+    @Shadow
+    short nonEmptyBlockCount;
+    @Shadow
+    private short tickingBlockCount;
+    @Shadow
+    private short tickingFluidCount;
+
+    /**
+     * @author DoggySazHi
+     * @reason Replace the Paper implementation with Mojang + Lithium implementation
+     */
+    @Overwrite
+    public void recalcBlockCounts() {
+        this.countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
+
+        BlockStateCounter lv = new BlockStateCounter();
+        this.states.count((state, count) -> {
+            lv.accept(state, count);
             addToFlagCount(this.countsByFlag, state, (short) count);
         });
-    }
 
-    @Inject(method = "calculateCounts()V", at = @At("HEAD"))
-    private void createFlagCounters(CallbackInfo ci) {
-        this.countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
+        this.nonEmptyBlockCount = (short)lv.nonEmptyBlockCount;
+        this.tickingBlockCount = (short)lv.randomTickableBlockCount;
+        this.tickingFluidCount = (short)lv.nonEmptyFluidCount;
     }
 
     @Inject(
@@ -99,10 +116,10 @@ public abstract class ChunkSectionMixin implements BlockCountingSection, BlockLi
     }
 
     @Inject(
-            method = "setBlockState(IIILnet/minecraft/block/BlockState;Z)Lnet/minecraft/block/BlockState;",
+            method = "setBlockState(IIILnet/minecraft/world/level/block/state/BlockState;Z)Lnet/minecraft/world/level/block/state/BlockState;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/block/BlockState;getFluidState()Lnet/minecraft/fluid/FluidState;",
+                    target = "Lnet/minecraft/world/level/block/state/BlockState;getFluidState()Lnet/minecraft/world/level/material/FluidState;",
                     ordinal = 0,
                     shift = At.Shift.BEFORE
             ),

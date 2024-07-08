@@ -48,6 +48,7 @@
     "collections.entity_by_type.TypeFilterableListMixin",
     "collections.chunk_tickets.SortedArraySetMixin",
     "collections.block_entity_tickers.WorldChunkMixin",
+    "collections.goals.GoalSelectorMixin",
     "world.block_entity_ticking.sleeping.WrappedBlockEntityTickInvokerAccessor",
     "world.block_entity_ticking.sleeping.campfire.CampfireBlockEntityMixin",
     "world.block_entity_ticking.sleeping.campfire.unlit.CampfireBlockEntityMixin",

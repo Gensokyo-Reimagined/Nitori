@@ -39,6 +39,7 @@
     "shapes.blockstate_cache.BlockMixin",
     "shapes.lazy_shape_context.EntityShapeContextMixin",
     "entity.fast_retrieval.SectionedEntityCacheMixin",
+    "entity.fast_hand_swing.LivingEntityMixin",
     "math.fast_blockops.DirectionMixin",
     "math.fast_blockops.BlockPosMixin",
     "math.fast_util.AxisCycleDirectionMixin$ForwardMixin",
@@ -61,6 +62,8 @@
     "util.accessors.EntityTrackingSectionAccessor",
     "util.accessors.ServerEntityManagerAccessor",
     "util.block_tracking.AbstractBlockStateMixin",
-    "MixinEntityTickList"
+    "playerwatching.MixinChunkFilter",
+    "playerwatching.MixinServerPlayerEntity",
+    "playerwatching.optimize_nearby_player_lookups.MixinMobEntity"
   ]
 }

@@ -17,7 +17,6 @@
     "MixinEntitySectionStorage",
     "MixinGameRules",
     "MixinIteratorSafeOrderedReferenceSet",
-    "MixinLevel",
     "MixinLevelStorageAccess",
     "MixinMob",
     "math.sine_lut.MixinMth",

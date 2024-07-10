@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.mixin;
+package net.gensokyoreimagined.nitori.mixin.needs_testing;
 
 import com.google.common.collect.Lists;
 import net.gensokyoreimagined.nitori.common.util.collections.HashedReferenceList;

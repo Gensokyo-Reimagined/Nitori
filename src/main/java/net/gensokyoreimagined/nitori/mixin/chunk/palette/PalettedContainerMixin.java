@@ -1,197 +1,89 @@
 package net.gensokyoreimagined.nitori.mixin.chunk.palette;
 
-//import com.google.common.collect.ImmutableList;
-//import it.unimi.dsi.fastutil.HashCommon;
-//import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-//import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-//import net.minecraft.network.PacketByteBuf;
-//import net.minecraft.network.encoding.VarInts;
-//import net.minecraft.util.collection.IndexedIterable;
-//import net.minecraft.world.chunk.EntryMissingException;
-//import net.minecraft.world.chunk.Palette;
-//import net.minecraft.world.chunk.PaletteResizeListener;
+// import net.gensokyoreimagined.nitori.common.world.chunk.LithiumHashPalette;
+// import net.minecraft.core.IdMap;
+// import net.minecraft.world.level.chunk.PalettedContainer;
+// import org.jetbrains.annotations.NotNull;
+// import org.spongepowered.asm.mixin.*;
+// import net.minecraft.world.level.chunk.Palette;
 //
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.function.Predicate;
+// import static net.minecraft.world.level.chunk.PalettedContainer.Strategy.LINEAR_PALETTE_FACTORY;
+// import static net.minecraft.world.level.chunk.PalettedContainer.Strategy.SINGLE_VALUE_PALETTE_FACTORY;
 //
-//import static it.unimi.dsi.fastutil.Hash.FAST_LOAD_FACTOR;
+// @Mixin(PalettedContainer.Strategy.class)
+// public abstract class PalettedContainerMixin {
+//     @Mutable
+//     @Shadow
+//     @Final
+//     public static PalettedContainer.Strategy SECTION_STATES;
 //
-///**
-// * Generally provides better performance over the vanilla {@link net.minecraft.world.chunk.BiMapPalette} when calling
-// * {@link LithiumHashPalette#index(Object)} through using a faster backing map and reducing pointer chasing.
-// */
-//public class LithiumHashPalette<T> implements Palette<T> {
-//    private static final int ABSENT_VALUE = -1;
+//     @Unique
+//     private static final PalettedContainerConfigurationMixin<?>[] BLOCKSTATE_DATA_PROVIDERS;
+//     @Unique
+//     private static final PalettedContainerConfigurationMixin<?>[] BIOME_DATA_PROVIDERS;
 //
-//    private final IndexedIterable<T> idList;
-//    private final PaletteResizeListener<T> resizeHandler;
-//    private final int indexBits;
 //
-//    private final Reference2IntMap<T> table;
-//    private T[] entries;
-//    private int size = 0;
+//     @Unique
+//     private static final Palette.Factory HASH = LithiumHashPalette::create;
+//     @Mutable
+//     @Shadow
+//     @Final
+//     public static PalettedContainer.Strategy SECTION_BIOMES;
+//     @Shadow
+//     @Final
+//     static Palette.Factory GLOBAL_PALETTE_FACTORY;
 //
-//    public LithiumHashPalette(IndexedIterable<T> idList, PaletteResizeListener<T> resizeHandler, int indexBits, T[] entries, Reference2IntMap<T> table, int size) {
-//        this.idList = idList;
-//        this.resizeHandler = resizeHandler;
-//        this.indexBits = indexBits;
-//        this.entries = entries;
-//        this.table = table;
-//        this.size = size;
-//    }
+//     /*
+//      * @reason Replace the hash palette from vanilla with our own and change the threshold for usage to only 3 bits,
+//      * as our implementation performs better at smaller key ranges.
+//      * @author JellySquid, 2No2Name (avoid Configuration duplication, use hash palette for 3 bit biomes)
+//      */
+//     static {
+//         Palette.Factory idListFactory = GLOBAL_PALETTE_FACTORY;
 //
-//    public LithiumHashPalette(IndexedIterable<T> idList, int bits, PaletteResizeListener<T> resizeHandler, List<T> list) {
-//        this(idList, bits, resizeHandler);
+//         PalettedContainerConfigurationMixin<?> arrayConfiguration4bit = PalettedContainerConfigurationMixin.create(LINEAR_PALETTE_FACTORY, 4);
+//         PalettedContainerConfigurationMixin<?> hashConfiguration4bit = PalettedContainerConfigurationMixin.create(HASH, 4);
+//         BLOCKSTATE_DATA_PROVIDERS = new PalettedContainerConfigurationMixin<?>[]{
+//                 PalettedContainerConfigurationMixin.create(SINGLE_VALUE_PALETTE_FACTORY, 0),
+//                 // Bits 1-4 must all pass 4 bits as parameter, otherwise chunk sections will corrupt.
+//                 arrayConfiguration4bit,
+//                 arrayConfiguration4bit,
+//                 hashConfiguration4bit,
+//                 hashConfiguration4bit,
+//                 PalettedContainerConfigurationMixin.create(HASH, 5),
+//                 PalettedContainerConfigurationMixin.create(HASH, 6),
+//                 PalettedContainerConfigurationMixin.create(HASH, 7),
+//                 PalettedContainerConfigurationMixin.create(HASH, 8)
+//         };
 //
-//        for (T t : list) {
-//            this.addEntry(t);
-//        }
-//    }
+//         SECTION_STATES = new PalettedContainer.Strategy(4) {
+//             @Override
+//             public <A> @NotNull PalettedContainerConfigurationMixin<A> getConfiguration(@NotNull IdMap<A> idList, int bits) {
+//                 if (bits >= 0 && bits < BLOCKSTATE_DATA_PROVIDERS.length) {
+//                     //noinspection unchecked
+//                     return (PalettedContainerConfigurationMixin<A>) BLOCKSTATE_DATA_PROVIDERS[bits];
+//                 }
+//                 return PalettedContainerConfigurationMixin.create(idListFactory, MathHelper.ceilLog2(idList.size()));
+//             }
+//         };
 //
-//    @SuppressWarnings("unchecked")
-//    public LithiumHashPalette(IndexedIterable<T> idList, int bits, PaletteResizeListener<T> resizeHandler) {
-//        this.idList = idList;
-//        this.indexBits = bits;
-//        this.resizeHandler = resizeHandler;
+//         BIOME_DATA_PROVIDERS = new PalettedContainerConfigurationMixin<?>[]{
+//                 PalettedContainerConfigurationMixin.create(SINGLE_VALUE_PALETTE_FACTORY, 0),
+//                 PalettedContainerConfigurationMixin.create(LINEAR_PALETTE_FACTORY, 1),
+//                 PalettedContainerConfigurationMixin.create(LINEAR_PALETTE_FACTORY, 2),
+//                 PalettedContainerConfigurationMixin.create(HASH, 3)
+//         };
 //
-//        int capacity = 1 << bits;
 //
-//        this.entries = (T[]) new Object[capacity];
-//        this.table = new Reference2IntOpenHashMap<>(capacity, FAST_LOAD_FACTOR);
-//        this.table.defaultReturnValue(ABSENT_VALUE);
-//    }
-//
-//    @Override
-//    public int index(T obj) {
-//        int id = this.table.getInt(obj);
-//
-//        if (id == ABSENT_VALUE) {
-//            id = this.computeEntry(obj);
-//        }
-//
-//        return id;
-//    }
-//
-//    @Override
-//    public boolean hasAny(Predicate<T> predicate) {
-//        for (int i = 0; i < this.size; ++i) {
-//            if (predicate.test(this.entries[i])) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-//
-//    private int computeEntry(T obj) {
-//        int id = this.addEntry(obj);
-//
-//        if (id >= 1 << this.indexBits) {
-//            if (this.resizeHandler == null) {
-//                throw new IllegalStateException("Cannot grow");
-//            } else {
-//                id = this.resizeHandler.onResize(this.indexBits + 1, obj);
-//            }
-//        }
-//
-//        return id;
-//    }
-//
-//    private int addEntry(T obj) {
-//        int nextId = this.size;
-//
-//        if (nextId >= this.entries.length) {
-//            this.resize(this.size);
-//        }
-//
-//        this.table.put(obj, nextId);
-//        this.entries[nextId] = obj;
-//
-//        this.size++;
-//
-//        return nextId;
-//    }
-//
-//    private void resize(int neededCapacity) {
-//        this.entries = Arrays.copyOf(this.entries, HashCommon.nextPowerOfTwo(neededCapacity + 1));
-//    }
-//
-//    @Override
-//    public T get(int id) {
-//        T[] entries = this.entries;
-//
-//        T entry = null;
-//        if (id >= 0 && id < entries.length) {
-//            entry = entries[id];
-//        }
-//
-//        if (entry != null) {
-//            return entry;
-//        } else {
-//            throw new EntryMissingException(id);
-//        }
-//    }
-//
-//    @Override
-//    public void readPacket(PacketByteBuf buf) {
-//        this.clear();
-//
-//        int entryCount = buf.readVarInt();
-//
-//        for (int i = 0; i < entryCount; ++i) {
-//            this.addEntry(this.idList.get(buf.readVarInt()));
-//        }
-//    }
-//
-//    @Override
-//    public void writePacket(PacketByteBuf buf) {
-//        int size = this.size;
-//        buf.writeVarInt(size);
-//
-//        for (int i = 0; i < size; ++i) {
-//            buf.writeVarInt(this.idList.getRawId(this.get(i)));
-//        }
-//    }
-//
-//    @Override
-//    public int getPacketSize() {
-//        int size = VarInts.getSizeInBytes(this.size);
-//
-//        for (int i = 0; i < this.size; ++i) {
-//            size += VarInts.getSizeInBytes(this.idList.getRawId(this.get(i)));
-//        }
-//
-//        return size;
-//    }
-//
-//    @Override
-//    public int getSize() {
-//        return this.size;
-//    }
-//
-//    @Override
-//    public Palette<T> copy() {
-//        return new LithiumHashPalette<>(this.idList, this.resizeHandler, this.indexBits, this.entries.clone(), new Reference2IntOpenHashMap<>(this.table), this.size);
-//    }
-//
-//    private void clear() {
-//        Arrays.fill(this.entries, null);
-//        this.table.clear();
-//        this.size = 0;
-//    }
-//
-//    public List<T> getElements() {
-//        ImmutableList.Builder<T> builder = new ImmutableList.Builder<>();
-//        for (T entry : this.entries) {
-//            if (entry != null) {
-//                builder.add(entry);
-//            }
-//        }
-//        return builder.build();
-//    }
-//
-//    public static <A> Palette<A> create(int bits, IndexedIterable<A> idList, PaletteResizeListener<A> listener, List<A> list) {
-//        return new LithiumHashPalette<>(idList, bits, listener, list);
-//    }
-//}
+//         SECTION_BIOMES = new PalettedContainer.Strategy(2) {
+//             @Override
+//             public <A> @NotNull PalettedContainerConfigurationMixin<A> getConfiguration(@NotNull IdMap<A> idList, int bits) {
+//                 if (bits >= 0 && bits < BIOME_DATA_PROVIDERS.length) {
+//                     //noinspection unchecked
+//                     return (PalettedContainerConfigurationMixin<A>) BIOME_DATA_PROVIDERS[bits];
+//                 }
+//                 return PalettedContainerConfigurationMixin.create(idListFactory, MathHelper.ceilLog2(idList.size()));
+//             }
+//         };
+//     }
+// }

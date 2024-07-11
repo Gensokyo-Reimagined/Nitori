@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.chunk.palette;
+package net.gensokyoreimagined.nitori.mixin.needs_testing.chunk.palette;
 
 // import net.gensokyoreimagined.nitori.common.world.chunk.LithiumHashPalette;
 // import net.minecraft.core.IdMap;

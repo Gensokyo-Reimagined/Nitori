@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.alloc.enum_values.living_entity;
+package net.gensokyoreimagined.nitori.mixin.needs_testing.living_entity.enum_values;
 
 import net.gensokyoreimagined.nitori.common.util.EquipmentSlotConstants;
 import net.minecraft.world.entity.EquipmentSlot;

@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.chunk.palette;
+package net.gensokyoreimagined.nitori.mixin.needs_testing.chunk.palette;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;

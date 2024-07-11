@@ -47,12 +47,15 @@
     "math.vec.FastMathVec3DMixin",
     "math.general.GenericFastMathMixin",
     "math.intrinsic.MathHelperIntrinsicMixin",
+    "math.joml.JOMLMixin",
+    "math.rounding.FastRoundingVoxShapeMixin",
     "collections.entity_filtering.TypeFilterableListMixin",
     "collections.entity_by_type.TypeFilterableListMixin",
     "collections.chunk_tickets.SortedArraySetMixin",
     "collections.block_entity_tickers.WorldChunkMixin",
     "collections.goals.GoalSelectorMixin",
     "collections.mob_spawning.SpawnSettingsMixin",
+    "collections.attributes.AttributeContainerMixin",
     "world.block_entity_ticking.sleeping.WrappedBlockEntityTickInvokerAccessor",
     "world.block_entity_ticking.sleeping.campfire.CampfireBlockEntityMixin",
     "world.block_entity_ticking.sleeping.campfire.unlit.CampfireBlockEntityMixin",
@@ -68,7 +71,6 @@
     "playerwatching.MixinChunkFilter",
     "playerwatching.MixinServerPlayerEntity",
     "playerwatching.optimize_nearby_player_lookups.MixinMobEntity",
-    "alloc.enum_values.living_entity.LivingEntityMixin",
-    "chunk.palette.PaletteResizeAccessor",
+    "logic.fast_bits_blockpos.OptimizedBlockPosBitsMixin"
   ]
 }

@@ -41,6 +41,7 @@
     "collections.mob_spawning.SpawnSettingsMixin",
     "entity.fast_hand_swing.LivingEntityMixin",
     "entity.fast_retrieval.SectionedEntityCacheMixin",
+    "entity.fall_damage.NoFallDamageMixin",
     "logic.fast_bits_blockpos.OptimizedBlockPosBitsMixin",
     "math.fast_blockops.BlockPosMixin",
     "math.fast_blockops.DirectionMixin",

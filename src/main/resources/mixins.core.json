@@ -57,6 +57,7 @@
     "math.sine_lut.MixinMth",
     "math.vec.FastMathVec3DMixin",
     "network.microopt.VarIntsMixin",
+    "network.microopt.StringEncodingMixin",
     "playerwatching.MixinChunkFilter",
     "playerwatching.MixinServerPlayerEntity",
     "playerwatching.optimize_nearby_player_lookups.MixinMobEntity",

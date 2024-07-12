@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.playerwatching;
+package net.gensokyoreimagined.nitori.mixin.vmp.playerwatching;
 
 import net.minecraft.server.level.ChunkTrackingView;
 import org.spongepowered.asm.mixin.Mixin;

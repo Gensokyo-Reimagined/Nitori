@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.playerwatching;
+package net.gensokyoreimagined.nitori.mixin.vmp.playerwatching;
 
 import net.gensokyoreimagined.nitori.common.chunkwatching.PlayerClientVDTracking;
 import net.minecraft.server.level.ClientInformation;

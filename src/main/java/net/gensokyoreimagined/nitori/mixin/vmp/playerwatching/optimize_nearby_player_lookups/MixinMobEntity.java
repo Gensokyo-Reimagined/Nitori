@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.playerwatching.optimize_nearby_player_lookups;
+package net.gensokyoreimagined.nitori.mixin.vmp.playerwatching.optimize_nearby_player_lookups;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

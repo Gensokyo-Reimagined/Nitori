@@ -58,11 +58,16 @@
     "math.vec.FastMathVec3DMixin",
     "network.microopt.VarIntsMixin",
     "network.microopt.StringEncodingMixin",
-    "playerwatching.MixinChunkFilter",
-    "playerwatching.MixinServerPlayerEntity",
-    "playerwatching.optimize_nearby_player_lookups.MixinMobEntity",
+    "vmp.playerwatching.MixinChunkFilter",
+    "vmp.playerwatching.MixinServerPlayerEntity",
+    "vmp.playerwatching.optimize_nearby_player_lookups.MixinMobEntity",
+    "vmp.general.collections.MixinTypeFilterableList",
+    "vmp.entity.move_zero_velocity.MixinEntity",
     "shapes.blockstate_cache.BlockMixin",
     "shapes.lazy_shape_context.EntityShapeContextMixin",
+    "shapes.precompute_shape_arrays.FractionalDoubleListMixin",
+    "shapes.precompute_shape_arrays.SimpleVoxelShapeMixin",
+    "shapes.specialized_shapes.VoxelShapeMixin",
     "util.MixinLevelBlockEntityRetrieval",
     "util.accessors.ClientEntityManagerAccessor",
     "util.accessors.EntityTrackingSectionAccessor",
@@ -75,6 +80,7 @@
     "world.block_entity_ticking.sleeping.furnace.AbstractFurnaceBlockEntityMixin",
     "world.block_entity_ticking.support_cache.BlockEntityMixin",
     "world.block_entity_ticking.support_cache.DirectBlockEntityTickInvokerMixin",
-    "world.block_entity_ticking.support_cache.WorldChunkMixin"
+    "world.block_entity_ticking.support_cache.WorldChunkMixin",
+    "world.portal_checks.DisablePortalChecksMixin"
   ]
 }

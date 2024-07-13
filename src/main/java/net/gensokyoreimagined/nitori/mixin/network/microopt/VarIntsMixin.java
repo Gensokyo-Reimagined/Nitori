@@ -22,18 +22,17 @@ public class VarIntsMixin {
      * @reason optimized version
      */
     @Overwrite
-    public static ByteBuf write(ByteBuf buf, int value) {
+    public static ByteBuf write(ByteBuf buf, int i) {
         // Peel the one and two byte count cases explicitly as they are the most common VarInt sizes
         // that the server will send, to improve inlining.
-        if ((value & (0xFFFFFFFF << 7)) == 0) {
-            buf.writeByte(value);
-        } else if ((value & (0xFFFFFFFF << 14)) == 0) {
-            int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
+        if ((i & (0xFFFFFFFF << 7)) == 0) {
+            buf.writeByte(i);
+        } else if ((i & (0xFFFFFFFF << 14)) == 0) {
+            int w = (i & 0x7F | 0x80) << 8 | (i >>> 7);
             buf.writeShort(w);
         } else {
-            writeOld(buf, value);
+            writeOld(buf, i);
         }
-
         return buf;
     }
 

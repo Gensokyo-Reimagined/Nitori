@@ -1,35 +1,39 @@
 # Nitori
 A performance mod that converts patches into mixins using the Ignite Framework for Paper/Spigot.
 
-## Optimizations
+## Optimizations:
 This plugin provides the following optimizations:
-- [x] Iterate entity trackers faster by using Int2ObjectLinkedOpenHashMap
-- [ ] Reduce constants allocations
-- [x] Entity Micro Optimizations
-- [ ] Lithium mixins
-  - [x] Fast util
-  - [x] HashedReferenceList
-  - [x] CompactSineLUT
-  - [x] Fast retrieval
-  - [x] Cached hashcode
-  - [x] Store gamerules in fastutil hashmap
-  - [ ] Precompute shape arrays
-  - [ ] Collections.attributes
-  - [x] Collections.entity_by_type 
-  - [x] Collections.entity_filtering 
-  - [ ] Chunk serialization
-  - [x] Cache iterate outwards
-  - [ ] Block moving block shapes
-  - [x] Shapes blockstate cache
-  - [x] Lithium gen
-  - [x] Ai sensor secondary POI
-  - [ ] World tick scheduler
-  - [ ] TileEntity Tracking
-- [x] Smarter statistics-ticking
-- [ ] Async Pathfinding
-- [x] Multithreaded Tracker
+- Faster Entity tracker by utilizing **Multiple Cores** this will allow larger servers to have way more entities
+- Async NBT data saving which improves where paper doesn't on world saving
+- Many of Lithium's Optimization patches which includes:
+  - Faster Math
+  - Faster Entity retrieval
+  - Reduced Memory allocations
+  - Improved inlined logics
+  - Improved collections
+  - Pre-Computed Shape arrays
+  - Improved Block Entity tickings
+  - Lithium Chunk Gen
+  - Mob Ai Improvements (soon)
+  - Fast BlockPos
+  - Faster entity related inmterractions (Hand swing, Sprinting particles etc.)
+  - ...and much more
+- Includes some of the patches from Very Many Players (VMP)'s
+  - Improved player tracking logic
+  - Improved TypeFilterableList
+  - If entity velocity is zero it won't send it as packets
+  - Improved Player lookups
+  - Faster VarInts
+- Some patches from Potatoptimize
+  - Way faster math
+  - Faster rotation logic
+  - Many Inlined logics
 
-**NOTE: This mod may or may not alter the default behaviors of some mob AI.**
+## Optimizations To-Do:
+- Async Mob Pathfinding
+- Multithreading starlight using ScaleableLux
+- Easier config to toggle optimizations on and off
+- Improving EntityTickList further
 
 ---
 

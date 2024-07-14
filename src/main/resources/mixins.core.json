@@ -31,6 +31,7 @@
     "alloc.composter.ComposterMixin$ComposterBlockComposterInventoryMixin",
     "alloc.composter.ComposterMixin$ComposterBlockDummyInventoryMixin",
     "alloc.composter.ComposterMixin$ComposterBlockFullComposterInventoryMixin",
+    "alloc.biome_temprature_leak.Biome_threadLocalMixin",
     "cached_hashcode.BlockNeighborGroupMixin",
     "collections.attributes.AttributeContainerMixin",
     "collections.block_entity_tickers.WorldChunkMixin",

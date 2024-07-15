@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.needs_testing.brain;
+package net.gensokyoreimagined.nitori.mixin.needs_testing.collections.brain;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;

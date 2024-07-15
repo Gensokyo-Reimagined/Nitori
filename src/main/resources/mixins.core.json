@@ -40,6 +40,8 @@
     "collections.entity_filtering.TypeFilterableListMixin",
     "collections.goals.GoalSelectorMixin",
     "collections.mob_spawning.SpawnSettingsMixin",
+    "collections.fluid_submersion.EntityMixin",
+    "collections.brain.BrainMixin",
     "entity.fast_hand_swing.LivingEntityMixin",
     "entity.fast_retrieval.SectionedEntityCacheMixin",
     "entity.fall_damage.NoFallDamageMixin",

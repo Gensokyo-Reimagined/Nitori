@@ -31,7 +31,7 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //
 //    @Shadow
 //    @Final
-//    private PalettedContainer<BlockState> blockStateContainer;
+//    private PalettedContainer<BlockState> states;
 //
 //    @Unique
 //    private short[] countsByFlag = null;
@@ -63,7 +63,7 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //    private void fastInitClientCounts() {
 //        this.countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
 //        for (TrackedBlockStatePredicate trackedBlockStatePredicate : BlockStateFlags.TRACKED_FLAGS) {
-//            if (this.blockStateContainer.maybeHas(trackedBlockStatePredicate)) {
+//            if (this.states.maybeHas(trackedBlockStatePredicate)) {
 //                //We haven't counted, so we just set the count so high that it never incorrectly reaches 0.
 //                //For most situations, this overestimation does not hurt client performance compared to correct counting,
 //                this.countsByFlag[trackedBlockStatePredicate.getIndex()] = 16 * 16 * 16;

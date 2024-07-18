@@ -47,6 +47,8 @@
     "entity.fall_damage.NoFallDamageMixin",
     "entity.sprinting_particles.EntityMixin",
     "entity.collisions.unpushable_cramming.BoatEntityMixin",
+    "entity.speed.EntitySpeedMixin",
+    "entity.navigation.CancelNavigationMixin",
     "logic.fast_bits_blockpos.OptimizedBlockPosBitsMixin",
     "math.fast_blockops.BlockPosMixin",
     "math.fast_blockops.DirectionMixin",
@@ -63,6 +65,7 @@
     "math.random.RandomMixin",
     "network.microopt.VarIntsMixin",
     "network.microopt.StringEncodingMixin",
+    "network.block_breaking.CacheBlockBreakPacketMixin",
     "vmp.playerwatching.MixinChunkFilter",
     "vmp.playerwatching.MixinServerPlayerEntity",
     "vmp.playerwatching.optimize_nearby_player_lookups.MixinMobEntity",
@@ -87,6 +90,8 @@
     "world.block_entity_ticking.support_cache.DirectBlockEntityTickInvokerMixin",
     "world.block_entity_ticking.support_cache.WorldChunkMixin",
     "world.portal_checks.DisablePortalChecksMixin",
-    "world.blending.BlendMixin"
+    "world.blending.BlendMixin",
+    "world.farmland.FarmlandBlockMixin",
+    "world.biome_access.BiomeAccessMixin"
   ]
 }

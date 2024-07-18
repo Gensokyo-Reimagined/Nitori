@@ -81,6 +81,7 @@
     "world.block_entity_ticking.support_cache.BlockEntityMixin",
     "world.block_entity_ticking.support_cache.DirectBlockEntityTickInvokerMixin",
     "world.block_entity_ticking.support_cache.WorldChunkMixin",
-    "world.portal_checks.DisablePortalChecksMixin"
+    "world.portal_checks.DisablePortalChecksMixin",
+    "util.block_tracking.ChunkSectionMixin"
   ]
 }

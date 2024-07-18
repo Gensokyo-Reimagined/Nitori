@@ -1,7 +1,7 @@
 package net.gensokyoreimagined.nitori.mixin.network.microopt;
 
 import io.netty.buffer.ByteBuf;
-import net.gensokyoreimagined.nitori.mixin.util.network.VarIntUtil;
+import net.gensokyoreimagined.nitori.common.util.network.VarIntUtil;
 import net.minecraft.network.VarInt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;

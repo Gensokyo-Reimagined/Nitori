@@ -8,7 +8,6 @@
   "server": [
     "ChunkMapMixin",
     "ChunkMapMixin$TrackedEntity",
-    "MixinBlock",
     "MixinBlockPos",
     "MixinChunkEntitySlices",
     "MixinCraftPlayer",

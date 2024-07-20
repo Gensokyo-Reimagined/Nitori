@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: 21
       - name: Initialize caches
         uses: actions/cache@v3
@@ -34,7 +34,7 @@ jobs:
       - name: Gradle deez
         uses: gradle/actions/setup-gradle@v3
       - name: Build artifacts
-        run: ./gradlew clean build
+        run: ./gradlew build
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:

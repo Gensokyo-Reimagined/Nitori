@@ -1,9 +1,14 @@
-package net.gensokyoreimagined.nitori.mixin.needs_testing.brain;
+package net.gensokyoreimagined.nitori.mixin.collections.brain;
 
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.schedule.Activity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -14,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Mixin(Brain.class)
@@ -29,6 +35,11 @@ public class BrainMixin {
     @Final
     private Map<?, ?> sensors;
 
+    @Shadow
+    @Final
+    @Mutable
+    private Map<Activity, Set<Pair<MemoryModuleType<?>, MemoryStatus>>> activityRequirements;
+
     @Inject(
             method = "<init>",
             at = @At("RETURN")
@@ -36,6 +47,7 @@ public class BrainMixin {
     private void reinitializeBrainCollections(Collection<?> memories, Collection<?> sensors, ImmutableList<?> memoryEntries, Supplier<?> codecSupplier, CallbackInfo ci) {
         this.memories = new Reference2ReferenceOpenHashMap<>(this.memories);
         this.sensors = new Reference2ReferenceLinkedOpenHashMap<>(this.sensors);
+        this.activityRequirements = new Object2ObjectOpenHashMap<>(this.activityRequirements);
     }
 
 }

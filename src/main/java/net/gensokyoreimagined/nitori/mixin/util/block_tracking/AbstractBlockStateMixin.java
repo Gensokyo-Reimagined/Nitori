@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public class AbstractBlockStateMixin implements BlockStateFlagHolder {
     @Unique
-    private int flags;
+    private int nitori$flags;
 
     @Inject(method = "initCache", at = @At("RETURN"))
     private void init(CallbackInfo ci) {
@@ -34,11 +34,11 @@ public class AbstractBlockStateMixin implements BlockStateFlagHolder {
             }
         }
 
-        this.flags = flags;
+        this.nitori$flags = flags;
     }
 
     @Override
     public int lithium$getAllFlags() {
-        return this.flags;
+        return this.nitori$flags;
     }
 }

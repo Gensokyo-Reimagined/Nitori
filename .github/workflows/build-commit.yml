@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: 21
       - name: Initialize caches
         uses: actions/cache@v3
@@ -32,11 +32,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-commit-
       - name: Gradle deez
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
       - name: Build artifacts
         run: ./gradlew clean build
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: nitori-artifacts-${{ steps.ref.outputs.branch }}
           path: build/libs/*.jar

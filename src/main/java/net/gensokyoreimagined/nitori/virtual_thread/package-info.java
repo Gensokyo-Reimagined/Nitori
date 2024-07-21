@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.virtual_thread;
+package net.gensokyoreimagined.nitori.virtual_thread;
 
 /*
 Original patch:

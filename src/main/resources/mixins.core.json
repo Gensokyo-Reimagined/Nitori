@@ -92,6 +92,8 @@
     "world.portal_checks.DisablePortalChecksMixin",
     "world.blending.BlendMixin",
     "world.farmland.FarmlandBlockMixin",
-    "world.biome_access.BiomeAccessMixin"
+    "world.biome_access.BiomeAccessMixin",
+    "virtual_thread.accessors.MixinMinecraftServer",
+    "virtual_thread.accessors.MixinWatchdogThread"
   ]
 }

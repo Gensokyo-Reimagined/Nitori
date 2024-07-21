@@ -1,6 +1,6 @@
 // Gale - virtual thread support
 
-package net.gensokyoreimagined.nitori.mixin.virtual_thread;
+package net.gensokyoreimagined.nitori.virtual_thread;
 
 import org.jetbrains.annotations.NotNull;
 

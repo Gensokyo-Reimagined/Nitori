@@ -13,7 +13,7 @@
     "MixinCraftPlayer",
     "MixinEntity",
     "MixinEntitySectionStorage",
-    "MixinGameRules",
+    "collections.gamerules.MixinGameRules",
     "MixinIteratorSafeOrderedReferenceSet",
     "MixinLevelStorageAccess",
     "entity.micro_opts.MixinMob",
@@ -49,7 +49,11 @@
     "entity.collisions.unpushable_cramming.BoatEntityMixin",
     "entity.speed.EntitySpeedMixin",
     "entity.navigation.CancelNavigationMixin",
+    "entity.replace_entitytype_predicates.AbstractMinecartEntityMixin",
+    "entity.replace_entitytype_predicates.AbstractDecorationEntityMixin",
+    "entity.replace_entitytype_predicates.ItemFrameEntityMixin",
     "logic.fast_bits_blockpos.OptimizedBlockPosBitsMixin",
+    "logic.fast_rotations.EulerAngleMixin",
     "math.fast_blockops.BlockPosMixin",
     "math.fast_blockops.DirectionMixin",
     "math.fast_util.AxisCycleDirectionMixin$BackwardMixin",
@@ -93,7 +97,5 @@
     "world.blending.BlendMixin",
     "world.farmland.FarmlandBlockMixin",
     "world.biome_access.BiomeAccessMixin",
-    "virtual_thread.accessors.MixinMinecraftServer",
-    "virtual_thread.accessors.MixinWatchdogThread"
   ]
 }

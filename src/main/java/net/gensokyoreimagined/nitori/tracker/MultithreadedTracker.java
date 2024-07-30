@@ -19,8 +19,8 @@ package net.gensokyoreimagined.nitori.tracker;
  */
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.papermc.paper.util.maplist.IteratorSafeOrderedReferenceSet;
-import io.papermc.paper.world.ChunkEntitySlices;
+import ca.spottedleaf.moonrise.common.list.IteratorSafeOrderedReferenceSet; //io.papermc.paper.util.maplist.IteratorSafeOrderedReferenceSet;
+import ca.spottedleaf.moonrise.patches.chunk_system.level.entity.ChunkEntitySlices; //io.papermc.paper.world.ChunkEntitySlices;
 import net.gensokyoreimagined.nitori.access.IMixinChunkEntitySlicesAccess;
 import net.gensokyoreimagined.nitori.access.IMixinChunkMap_TrackedEntityAccess;
 import net.gensokyoreimagined.nitori.access.IMixinIteratorSafeOrderedReferenceSetAccess;

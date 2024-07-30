@@ -27,11 +27,11 @@ package net.gensokyoreimagined.nitori.mixin.entity.replace_entitytype_predicates
 //                    target = "Lnet/minecraft/world/level/Level;getEntitiesOfClass(Ljava/lang/Class;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;"
 //            )
 //    )
-//    private List<Entity> getMinecartsDirectly(Level level, Entity excluded, AABB box, Predicate<? super Entity> predicate) {
+//    private List<Entity> getMinecartsDirectly(Level world, Entity excluded, AABB box, Predicate<? super Entity> predicate) {
 //        if (predicate == RIDABLE_MINECARTS) {
 //            // Not using MinecartEntity.class and no predicate, because mods may add another minecart that is type rideable without being MinecartEntity
 //            //noinspection unchecked,rawtypes
-//            return (List) level.getEntitiesByClass(AbstractMinecart.class, box, (Entity e) -> e != excluded && ((AbstractMinecart) e).getMinecartType() == AbstractMinecart.Type.RIDEABLE);
+//            return (List) world.getEntitiesOfClass(AbstractMinecart.class, box, (Entity e) -> e != excluded && ((AbstractMinecart) e).getMinecartType() == AbstractMinecart.Type.RIDEABLE);
 //        }
 //
 //        return level.getEntities(excluded, box, predicate);

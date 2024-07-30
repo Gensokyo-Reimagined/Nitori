@@ -32,9 +32,10 @@ package net.gensokyoreimagined.nitori.mixin.needs_testing.inline_height;
 //            method = "<init>",
 //            at = @At("RETURN")
 //    )
-//    private void initHeightCache(WritableLevelData properties, ResourceKey<?> registryRef, RegistryAccess registryManager, Holder<DimensionType> dimensionEntry, Supplier<?> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates, CallbackInfo ci) {
-//        this.nitori$getHeight = dimensionEntry.value().height();
-//        this.nitori$getMinBuildHeight = dimensionEntry.value().minY();
+//    private void initHeightCache(WritableLevelData worldData, ResourceKey<?> registryKey, RegistryAccess registryAccess, Holder<DimensionType> dimensionTypeRegistration, Supplier<?> profiler, boolean isClientSide, boolean debug, long biomeManager, int maxChainedNeighborUpdates, CallbackInfo ci)
+//    {
+//        this.nitori$getHeight = dimensionTypeRegistration.value().height();
+//        this.nitori$getMinBuildHeight = dimensionTypeRegistration.value().minY();
 //        this.nitori$getSectionsCount = this.nitori$getMinBuildHeight + this.nitori$getHeight - 1;
 //    }
 //

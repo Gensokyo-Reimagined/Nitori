@@ -1,6 +1,7 @@
 package net.gensokyoreimagined.nitori.mixin.network.microopt;
 
 import io.netty.buffer.ByteBuf;
+import net.gensokyoreimagined.nitori.common.util.network.VarIntUtil;
 import net.minecraft.network.VarInt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -12,15 +13,8 @@ public class VarIntsMixin {
      * @reason optimized version
      */
     @Overwrite
-    public static int getByteSize(int i) {
-        return VARINT_EXACT_BYTE_LENGTHS[Integer.numberOfLeadingZeros(i)];
-    }
-    private static final int[] VARINT_EXACT_BYTE_LENGTHS = new int[33];
-    static {
-        for (int i = 0; i <= 32; ++i) {
-            VARINT_EXACT_BYTE_LENGTHS[i] = (int) Math.ceil((31d - (i - 1)) / 7d);
-        }
-        VARINT_EXACT_BYTE_LENGTHS[32] = 1; // Special case for the number 0.
+    public static int getByteSize(int v) {
+        return VarIntUtil.getVarIntLength(v);
     }
 
     /**

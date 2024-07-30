@@ -17,10 +17,7 @@ package net.gensokyoreimagined.nitori.mixin.cached_hashcode;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -39,7 +36,8 @@ public class BlockNeighborGroupMixin {
     @Final
     private Direction direction;
 
-    private int hash;
+    @Unique
+    private int nitori$hash;
 
     /**
      * @reason Initialize the object's hashcode and cache it
@@ -50,7 +48,7 @@ public class BlockNeighborGroupMixin {
         hash = 31 * hash + this.second.hashCode();
         hash = 31 * hash + this.direction.hashCode();
 
-        this.hash = hash;
+        this.nitori$hash = hash;
     }
 
     /**
@@ -59,6 +57,6 @@ public class BlockNeighborGroupMixin {
      */
     @Overwrite(remap = false)
     public int hashCode() {
-        return this.hash;
+        return this.nitori$hash;
     }
 }

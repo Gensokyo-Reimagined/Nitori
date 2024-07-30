@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.util.network;
+package net.gensokyoreimagined.nitori.common.util.network;
 
 /**
  * Maps VarInt byte sizes to a lookup table corresponding to the number of bits in the integer,

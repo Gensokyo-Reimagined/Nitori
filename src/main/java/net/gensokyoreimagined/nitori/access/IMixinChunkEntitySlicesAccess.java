@@ -14,7 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.access;
 
-import com.destroystokyo.paper.util.maplist.EntityList;
+import ca.spottedleaf.moonrise.common.list.EntityList;
 
 public interface IMixinChunkEntitySlicesAccess {
     @SuppressWarnings("EmptyMethod")

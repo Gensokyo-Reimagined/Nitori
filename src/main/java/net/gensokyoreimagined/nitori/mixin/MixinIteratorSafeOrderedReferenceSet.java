@@ -14,7 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.mixin;
 
-import io.papermc.paper.util.maplist.IteratorSafeOrderedReferenceSet;
+import ca.spottedleaf.moonrise.common.list.IteratorSafeOrderedReferenceSet;
 import net.gensokyoreimagined.nitori.access.IMixinIteratorSafeOrderedReferenceSetAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;

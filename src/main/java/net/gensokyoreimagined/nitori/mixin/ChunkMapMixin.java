@@ -14,7 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.mixin;
 
-import com.destroystokyo.paper.util.misc.PooledLinkedHashSets;
+import ca.spottedleaf.moonrise.patches.chunk_system.level.ChunkSystemServerLevel;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
@@ -42,6 +42,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.Nullable;
@@ -86,13 +87,13 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         }
     }
 
-    @Inject(method = "processTrackQueue", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "newTrackerTick", at = @At("HEAD"), cancellable = true)
     private void atProcessTrackQueueHead(CallbackInfo callbackInfo) {
         // Implementation of 0107-Multithreaded-Tracker.patch
         //TODO: Restore config condition
         //if (NitoriConfig.enableAsyncEntityTracker) {
             if (this.gensouHacks$multithreadedTracker == null) {
-                this.gensouHacks$multithreadedTracker = new MultithreadedTracker(this.level.chunkSource.entityTickingChunks, this.gensouHacks$trackerMainThreadTasks);
+                this.gensouHacks$multithreadedTracker = new MultithreadedTracker(((ChunkSystemServerLevel) this.level).moonrise$getEntityTickingChunks(), this.gensouHacks$trackerMainThreadTasks);
             }
 
             this.gensouHacks$tracking = true;
@@ -132,9 +133,9 @@ public class ChunkMapMixin implements IMixinChunkMapAccess {
         @Override
         @Final
         @Invoker
-        public abstract void callUpdatePlayers(PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> newTrackerCandidates); // Mirai -> public
+        public abstract void callUpdatePlayers(List<ServerPlayer> players); // Mirai -> public
 
-        @Redirect(method = "updatePlayers(Lcom/destroystokyo/paper/util/misc/PooledLinkedHashSets$PooledObjectLinkedOpenHashSet;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;updatePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
+        @Redirect(method = "updatePlayers", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;updatePlayer(Lnet/minecraft/server/level/ServerPlayer;)V"))
         private void handleCitizensPluginTracking(ChunkMap.TrackedEntity self, ServerPlayer serverPlayer) {
             // Nitori - Citizens tracker must run on the main thread to avoid cyclic wait
             if (PluginCompatibilityRegistry.CITIZENS.shouldRedirectToMainThread(self, serverPlayer)) {

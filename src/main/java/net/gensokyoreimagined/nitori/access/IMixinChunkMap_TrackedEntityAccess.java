@@ -14,14 +14,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.access;
 
-import com.destroystokyo.paper.util.misc.PooledLinkedHashSets;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+
+import java.util.List;
 
 public interface IMixinChunkMap_TrackedEntityAccess {
     @SuppressWarnings("EmptyMethod")
     Entity getEntity();
 
     @SuppressWarnings("EmptyMethod")
-    void callUpdatePlayers(PooledLinkedHashSets.PooledObjectLinkedOpenHashSet<ServerPlayer> newTrackerCandidates);
+    void callUpdatePlayers(List<ServerPlayer> players);
 }

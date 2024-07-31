@@ -67,7 +67,7 @@ public class BlockStateFlags {
         OVERSIZED_SHAPE = new TrackedBlockStatePredicate(countingFlags.size()) {
             @Override
             public boolean test(BlockState operand) {
-                return operand.shapeExceedsCube();
+                return operand.hasLargeCollisionShape();
             }
         };
         countingFlags.add(OVERSIZED_SHAPE);

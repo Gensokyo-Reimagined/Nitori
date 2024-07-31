@@ -18,6 +18,8 @@ package net.gensokyoreimagined.nitori.tracker;
  * Ported from Petal, derived from Airplane
  */
 
+import ca.spottedleaf.moonrise.common.list.ReferenceList;
+import ca.spottedleaf.moonrise.common.misc.NearbyPlayers;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import ca.spottedleaf.moonrise.common.list.IteratorSafeOrderedReferenceSet; //io.papermc.paper.util.maplist.IteratorSafeOrderedReferenceSet;
 import ca.spottedleaf.moonrise.patches.chunk_system.level.entity.ChunkEntitySlices; //io.papermc.paper.world.ChunkEntitySlices;
@@ -26,9 +28,13 @@ import net.gensokyoreimagined.nitori.access.IMixinChunkMap_TrackedEntityAccess;
 import net.gensokyoreimagined.nitori.access.IMixinIteratorSafeOrderedReferenceSetAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ChunkMap;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -47,64 +53,44 @@ public class MultithreadedTracker {
             .setPriority(Thread.NORM_PRIORITY - 2)
             .build());
 
-    private final IteratorSafeOrderedReferenceSet<LevelChunk> entityTickingChunks;
+    private final ReferenceList<ServerChunkCache.ChunkAndHolder> entityTickingChunks;
     private final AtomicInteger taskIndex = new AtomicInteger();
 
     private final ConcurrentLinkedQueue<Runnable> mainThreadTasks;
     private final AtomicInteger finishedTasks = new AtomicInteger();
 
-    public MultithreadedTracker(IteratorSafeOrderedReferenceSet<LevelChunk> entityTickingChunks, ConcurrentLinkedQueue<Runnable> mainThreadTasks) {
+    public MultithreadedTracker(ReferenceList<ServerChunkCache.ChunkAndHolder> entityTickingChunks, ConcurrentLinkedQueue<Runnable> mainThreadTasks) {
         this.entityTickingChunks = entityTickingChunks;
         this.mainThreadTasks = mainThreadTasks;
     }
 
     public void tick() {
-        int iterator = this.entityTickingChunks.createRawIterator();
+        this.taskIndex.set(0);
+        this.finishedTasks.set(0);
 
-        if (iterator == -1) {
-            return;
+        for (int i = 0; i < parallelism; i++) {
+            trackerExecutor.execute(this::runUpdatePlayers);
         }
 
         // start with updating players
-        try {
-            this.taskIndex.set(iterator);
-            this.finishedTasks.set(0);
-
-            for (int i = 0; i < parallelism; i++) {
-                trackerExecutor.execute(this::runUpdatePlayers);
-            }
-
-            while (this.taskIndex.get() < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize()) {
-                this.runMainThreadTasks();
-                this.handleChunkUpdates(5); // assist
-            }
-
-            while (this.finishedTasks.get() != parallelism) {
-                this.runMainThreadTasks();
-            }
-
-            this.runMainThreadTasks(); // finish any remaining tasks
-        } finally {
-            this.entityTickingChunks.finishRawIterator();
+        while (this.taskIndex.get() < this.entityTickingChunks.size()) {
+            this.runMainThreadTasks();
+            this.handleChunkUpdates(5); // assist
         }
 
         // then send changes
-        iterator = this.entityTickingChunks.createRawIterator();
-
-        if (iterator == -1) {
-            return;
+        while (this.finishedTasks.get() != parallelism) {
+            this.runMainThreadTasks();
         }
 
-        try {
-            do {
-                LevelChunk chunk = this.entityTickingChunks.rawGet(iterator);
+        this.runMainThreadTasks(); // finish any remaining tasks
 
-                if (chunk != null) {
-                    this.updateChunkEntities(chunk, TrackerStage.SEND_CHANGES);
-                }
-            } while (++iterator < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize());
-        } finally {
-            this.entityTickingChunks.finishRawIterator();
+        for (ServerChunkCache.ChunkAndHolder chunkAndHolder : this.entityTickingChunks) {
+            LevelChunk chunk = chunkAndHolder.chunk();
+
+            if (chunk != null) {
+                this.updateChunkEntities(chunk, TrackerStage.SEND_CHANGES);
+            }
         }
     }
 
@@ -129,9 +115,9 @@ public class MultithreadedTracker {
 
     private boolean handleChunkUpdates(int tasks) {
         int index;
-        while ((index = this.taskIndex.getAndAdd(tasks)) < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize()) {
-            for (int i = index; i < index + tasks && i < ((IMixinIteratorSafeOrderedReferenceSetAccess) (Object) this.entityTickingChunks).getListSize(); i++) {
-                LevelChunk chunk = this.entityTickingChunks.rawGet(i);
+        while ((index = this.taskIndex.getAndAdd(tasks)) < this.entityTickingChunks.size()) {
+            for (int i = index; i < index + tasks && i < this.entityTickingChunks.size(); i++) {
+                LevelChunk chunk = this.entityTickingChunks.getChecked(i).chunk();
                 if (chunk != null) {
                     try {
                         this.updateChunkEntities(chunk, TrackerStage.UPDATE_PLAYERS);
@@ -149,7 +135,7 @@ public class MultithreadedTracker {
     }
 
     private void updateChunkEntities(LevelChunk chunk, TrackerStage trackerStage) {
-        final ChunkEntitySlices entitySlices = chunk.level.getEntityLookup().getChunk(chunk.locX, chunk.locZ);
+        final ChunkEntitySlices entitySlices = chunk.level.moonrise$getEntityLookup().getChunk(chunk.locX, chunk.locZ);
         if (entitySlices == null) {
             return;
         }
@@ -165,7 +151,10 @@ public class MultithreadedTracker {
                     if (trackerStage == TrackerStage.SEND_CHANGES) {
                         entityTracker.serverEntity.sendChanges();
                     } else if (trackerStage == TrackerStage.UPDATE_PLAYERS) {
-                        ((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).callUpdatePlayers(((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).getEntity().getPlayersInTrackRange());
+                        ReferenceList<ServerPlayer> nearbyPlayers = chunkMap.level.moonrise$getNearbyPlayers().getChunk(entity.chunkPosition()).getPlayers(NearbyPlayers.NearbyMapType.VIEW_DISTANCE);
+                        List<ServerPlayer> nearbyPlayersList = new ArrayList<ServerPlayer>(nearbyPlayers.size()); // intentionally typed as List for requirement clarity
+                        nearbyPlayers.forEach(nearbyPlayersList::add);
+                        ((IMixinChunkMap_TrackedEntityAccess) (Object) entityTracker).callUpdatePlayers(nearbyPlayersList);
                     }
                 }
             }

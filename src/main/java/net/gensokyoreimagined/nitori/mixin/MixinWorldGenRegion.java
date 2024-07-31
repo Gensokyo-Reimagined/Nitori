@@ -33,50 +33,50 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
-@Mixin(WorldGenRegion.class)
-public class MixinWorldGenRegion {
-    @Shadow @Final private ChunkPos firstPos;
-    @Shadow @Final private int size;
-
-    @Unique
-    private ChunkAccess[] gensouHacks$chunksArr;
-    @Unique
-    private int gensouHacks$minChunkX;
-    @Unique
-    private int gensouHacks$minChunkZ;
-
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(ServerLevel world, List<ChunkAccess> chunks, ChunkStatus status, int placementRadius, CallbackInfo ci) {
-        this.gensouHacks$minChunkX = this.firstPos.x;
-        this.gensouHacks$minChunkZ = this.firstPos.z;
-        this.gensouHacks$chunksArr = chunks.toArray(new ChunkAccess[0]);
-    }
-    
-    @Inject(method = "getChunk(II)Lnet/minecraft/world/level/chunk/ChunkAccess;", at = @At("HEAD"), cancellable = true)
-    public void getChunk(int chunkX, int chunkZ, CallbackInfoReturnable<ChunkAccess> cir) {
-        int x = chunkX - this.gensouHacks$minChunkX;
-        int z = chunkZ - this.gensouHacks$minChunkZ;
-        int w = this.size;
-
-        if (x >= 0 && z >= 0 && x < w && z < w) {
-            cir.setReturnValue(this.gensouHacks$chunksArr[x + z * w]);
-            cir.cancel();
-        } else {
-            throw new NullPointerException("No chunk exists at " + new ChunkPos(chunkX, chunkZ));
-        }
-    }
-    
-    @Inject(method = "getBlockState", at = @At("HEAD"), cancellable = true)
-    public void getBlockState(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
-        int x = (Pos.ChunkCoord.fromBlockCoord(pos.getX())) - this.gensouHacks$minChunkX;
-        int z = (Pos.ChunkCoord.fromBlockCoord(pos.getZ())) - this.gensouHacks$minChunkZ;
-        int w = this.size;
-
-        if (x >= 0 && z >= 0 && x < w && z < w) {
-            cir.setReturnValue(this.gensouHacks$chunksArr[x + z * w].getBlockState(pos));
-            cir.cancel();
-        } else {
-            throw new NullPointerException("No chunk exists at " + new ChunkPos(pos));
-        }
-    }
-}
+//@Mixin(WorldGenRegion.class)
+//public class MixinWorldGenRegion {
+//    @Shadow @Final private ChunkPos firstPos;
+//    @Shadow @Final private int size;
+//
+//    @Unique
+//    private ChunkAccess[] gensouHacks$chunksArr;
+//    @Unique
+//    private int gensouHacks$minChunkX;
+//    @Unique
+//    private int gensouHacks$minChunkZ;
+//
+//    @Inject(method = "<init>", at = @At("RETURN"))
+//    private void onInit(ServerLevel world, List<ChunkAccess> chunks, ChunkStatus status, int placementRadius, CallbackInfo ci) {
+//        this.gensouHacks$minChunkX = this.firstPos.x;
+//        this.gensouHacks$minChunkZ = this.firstPos.z;
+//        this.gensouHacks$chunksArr = chunks.toArray(new ChunkAccess[0]);
+//    }
+//
+//    @Inject(method = "getChunk(II)Lnet/minecraft/world/level/chunk/ChunkAccess;", at = @At("HEAD"), cancellable = true)
+//    public void getChunk(int chunkX, int chunkZ, CallbackInfoReturnable<ChunkAccess> cir) {
+//        int x = chunkX - this.gensouHacks$minChunkX;
+//        int z = chunkZ - this.gensouHacks$minChunkZ;
+//        int w = this.size;
+//
+//        if (x >= 0 && z >= 0 && x < w && z < w) {
+//            cir.setReturnValue(this.gensouHacks$chunksArr[x + z * w]);
+//            cir.cancel();
+//        } else {
+//            throw new NullPointerException("No chunk exists at " + new ChunkPos(chunkX, chunkZ));
+//        }
+//    }
+//
+//    @Inject(method = "getBlockState", at = @At("HEAD"), cancellable = true)
+//    public void getBlockState(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
+//        int x = (Pos.ChunkCoord.fromBlockCoord(pos.getX())) - this.gensouHacks$minChunkX;
+//        int z = (Pos.ChunkCoord.fromBlockCoord(pos.getZ())) - this.gensouHacks$minChunkZ;
+//        int w = this.size;
+//
+//        if (x >= 0 && z >= 0 && x < w && z < w) {
+//            cir.setReturnValue(this.gensouHacks$chunksArr[x + z * w].getBlockState(pos));
+//            cir.cancel();
+//        } else {
+//            throw new NullPointerException("No chunk exists at " + new ChunkPos(pos));
+//        }
+//    }
+//}

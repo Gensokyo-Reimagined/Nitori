@@ -1,6 +1,6 @@
 {
   "id": "Nitori",
-  "version": "1.3-SNAPSHOT",
+  "version": "1.5-SNAPSHOT",
   "mixins": [
     "mixins.core.json"
   ]

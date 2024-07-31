@@ -27,38 +27,38 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 // Taken from Lithium
 // https://github.com/CaffeineMC/lithium-fabric/blob/427dd75ffc922cc1858c1db4b283cc54744567e0/src/main/java/me/jellysquid/mods/lithium/mixin/alloc/chunk_random/ServerWorldMixin.java#L24
 
-@Mixin(ServerLevel.class)
-public abstract class MixinServerWorld {
-    @Unique
-    private final BlockPos.MutableBlockPos nitori$randomPosInChunkCachedPos = new BlockPos.MutableBlockPos();
-
-    /**
-     * @reason Avoid allocating BlockPos every invocation through using our allocation-free variant
-     */
-    @Redirect(
-            method = "tickChunk",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;getBlockRandomPos(IIII)Lnet/minecraft/core/BlockPos;"
-            )
-    )
-    private BlockPos redirectTickGetRandomPosInChunk(ServerLevel serverWorld, int x, int y, int z, int mask) {
-        ((ChunkRandomSource) serverWorld).nitori$getRandomPosInChunk(x, y, z, mask, this.nitori$randomPosInChunkCachedPos);
-
-        return this.nitori$randomPosInChunkCachedPos;
-    }
-
-    /**
-     * @reason Ensure an immutable block position is passed on block tick
-     */
-    @Redirect(
-            method = "tickChunk",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/state/BlockState;randomTick(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/util/RandomSource;)V"
-            )
-    )
-    private void redirectBlockStateTick(BlockState blockState, ServerLevel world, BlockPos pos, RandomSource rand) {
-        blockState.randomTick(world, pos.immutable(), rand);
-    }
-}
+//@Mixin(ServerLevel.class)
+//public abstract class MixinServerWorld {
+//    @Unique
+//    private final BlockPos.MutableBlockPos nitori$randomPosInChunkCachedPos = new BlockPos.MutableBlockPos();
+//
+//    /**
+//     * @reason Avoid allocating BlockPos every invocation through using our allocation-free variant
+//     */
+//    @Redirect(
+//            method = "tickChunk",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Lnet/minecraft/server/level/ServerLevel;getBlockRandomPos(IIII)Lnet/minecraft/core/BlockPos;"
+//            )
+//    )
+//    private BlockPos redirectTickGetRandomPosInChunk(ServerLevel serverWorld, int x, int y, int z, int mask) {
+//        ((ChunkRandomSource) serverWorld).nitori$getRandomPosInChunk(x, y, z, mask, this.nitori$randomPosInChunkCachedPos);
+//
+//        return this.nitori$randomPosInChunkCachedPos;
+//    }
+//
+//    /**
+//     * @reason Ensure an immutable block position is passed on block tick
+//     */
+//    @Redirect(
+//            method = "tickChunk",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Lnet/minecraft/server/level/ServerLevel;optimiseRandomTick(Lnet/minecraft/world/level/chunk/LevelChunk;I)V"
+//            )
+//    )
+//    private void redirectBlockStateTick(BlockState blockState, ServerLevel world, BlockPos pos, RandomSource rand) {
+//        blockState.randomTick(world, pos.immutable(), rand);
+//    }
+//}

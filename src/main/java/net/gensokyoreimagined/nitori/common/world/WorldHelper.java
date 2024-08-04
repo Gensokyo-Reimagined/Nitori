@@ -2,11 +2,8 @@ package net.gensokyoreimagined.nitori.common.world;
 
 import net.gensokyoreimagined.nitori.common.entity.EntityClassGroup;
 import net.gensokyoreimagined.nitori.common.entity.pushable.EntityPushablePredicate;
-import net.gensokyoreimagined.nitori.mixin.util.accessors.ClientEntityManagerAccessor;
 import net.gensokyoreimagined.nitori.mixin.util.accessors.EntityTrackingSectionAccessor;
-import net.gensokyoreimagined.nitori.mixin.util.accessors.ServerEntityManagerAccessor;
 import net.gensokyoreimagined.nitori.common.world.chunk.ClassGroupFilterableList;
-import net.gensokyoreimagined.nitori.mixin.util.accessors.ServerWorldAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ClassInstanceMultiMap;
 import net.minecraft.util.AbortableIterationConsumer;

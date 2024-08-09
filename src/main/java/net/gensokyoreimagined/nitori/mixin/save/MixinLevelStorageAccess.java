@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.mixin;
+package net.gensokyoreimagined.nitori.mixin.save;
 
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +29,7 @@ public abstract class MixinLevelStorageAccess {
     @Shadow protected abstract void saveLevelData(CompoundTag nbt);
 
     @Redirect(method = "modifyLevelDataWithoutDatafix", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;saveLevelData(Lnet/minecraft/nbt/CompoundTag;)V"))
-    private void gensouHacks$saveLevelData(LevelStorageSource.LevelStorageAccess levelStorageAccess, CompoundTag compoundTag) {
+    private void nitori$saveLevelData(LevelStorageSource.LevelStorageAccess levelStorageAccess, CompoundTag compoundTag) {
         Runnable writeRunnable = () -> saveLevelData(compoundTag);
 
         var ioExecutor = Util.backgroundExecutor();
@@ -37,7 +37,7 @@ public abstract class MixinLevelStorageAccess {
     }
 
     @Redirect(method = "saveDataTag(Lnet/minecraft/core/RegistryAccess;Lnet/minecraft/world/level/storage/WorldData;Lnet/minecraft/nbt/CompoundTag;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorageSource$LevelStorageAccess;saveLevelData(Lnet/minecraft/nbt/CompoundTag;)V"))
-    private void gensouHacks$saveLevelData2(LevelStorageSource.LevelStorageAccess levelStorageAccess, CompoundTag compoundTag) {
+    private void nitori$saveLevelData2(LevelStorageSource.LevelStorageAccess levelStorageAccess, CompoundTag compoundTag) {
         Runnable writeRunnable = () -> saveLevelData(compoundTag);
 
         var ioExecutor = Util.backgroundExecutor();

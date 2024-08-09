@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.world.tick_scheduler;
+package net.gensokyoreimagined.nitori.mixin.removed.world.tick_scheduler;
 
 //TODO: Make this work with paper
 

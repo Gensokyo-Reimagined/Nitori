@@ -12,20 +12,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.mixin;
+package net.gensokyoreimagined.nitori.mixin.unapplied;
 
-import ca.spottedleaf.moonrise.common.list.EntityList;
-import ca.spottedleaf.moonrise.patches.chunk_system.level.entity.ChunkEntitySlices;
-import net.gensokyoreimagined.nitori.access.IMixinChunkEntitySlicesAccess;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-@Mixin(ChunkEntitySlices.class)
-public abstract class MixinChunkEntitySlices implements IMixinChunkEntitySlicesAccess {
-    // Implementation of 0107-Multithreaded-Tracker.patch
-    @Override
-    @Final
-    @Accessor
-    public abstract EntityList getEntities();
-}
+//import ca.spottedleaf.moonrise.common.list.EntityList;
+//import ca.spottedleaf.moonrise.patches.chunk_system.level.entity.ChunkEntitySlices;
+//import net.gensokyoreimagined.nitori.access.IMixinChunkEntitySlicesAccess;
+//import org.spongepowered.asm.mixin.Final;
+//import org.spongepowered.asm.mixin.Mixin;
+//import org.spongepowered.asm.mixin.gen.Accessor;
+//
+//@Mixin(ChunkEntitySlices.class)
+//public abstract class MixinChunkEntitySlices implements IMixinChunkEntitySlicesAccess {
+//    // Implementation of 0107-Multithreaded-Tracker.patch
+//    @Override
+//    @Final
+//    @Accessor
+//    public abstract EntityList getEntities();
+//}

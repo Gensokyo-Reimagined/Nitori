@@ -79,12 +79,12 @@ public class MixinEntitySectionStorage<T extends EntityAccess> {
             // are placed somewhere inside the packed long
             for (int x = j; x <= m; x++) {
                 for (int z = Math.max(l, 0); z <= o; z++) {
-                    this.gensouHacks$forEachInColumn(x, k, n, z, consumer);
+                    this.nitori$forEachInColumn(x, k, n, z, consumer);
                 }
 
                 int bound = Math.min(-1, o);
                 for (int z = l; z <= bound; z++) {
-                    this.gensouHacks$forEachInColumn(x, k, n, z, consumer);
+                    this.nitori$forEachInColumn(x, k, n, z, consumer);
                 }
             }
         }
@@ -95,19 +95,19 @@ public class MixinEntitySectionStorage<T extends EntityAccess> {
 
     // Mirai start - lithium: fast retrieval
     @Unique
-    private void gensouHacks$forEachInColumn(int x, int k, int n, int z, AbortableIterationConsumer<EntitySection<T>> action) {
+    private void nitori$forEachInColumn(int x, int k, int n, int z, AbortableIterationConsumer<EntitySection<T>> action) {
         // y from negative to positive, but y is treated as unsigned
         for (int y = Math.max(k, 0); y <= n; y++) {
-            this.gensouHacks$consumeSection(SectionPos.asLong(x, y, z), action);
+            this.nitori$consumeSection(SectionPos.asLong(x, y, z), action);
         }
         int bound = Math.min(-1, n);
         for (int y = k; y <= bound; y++) {
-            this.gensouHacks$consumeSection(SectionPos.asLong(x, y, z), action);
+            this.nitori$consumeSection(SectionPos.asLong(x, y, z), action);
         }
     }
 
     @Unique
-    private void gensouHacks$consumeSection(long pos, AbortableIterationConsumer<EntitySection<T>> action) {
+    private void nitori$consumeSection(long pos, AbortableIterationConsumer<EntitySection<T>> action) {
         EntitySection<T> entitySection = this.getSection(pos);
         if (entitySection != null && !entitySection.isEmpty() && entitySection.getStatus().isAccessible()) {
             action.accept(entitySection);

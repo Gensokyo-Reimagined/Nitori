@@ -14,9 +14,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.access;
 
-import ca.spottedleaf.moonrise.common.list.EntityList;
-
-public interface IMixinChunkEntitySlicesAccess {
-    @SuppressWarnings("EmptyMethod")
-    EntityList getEntities();
-}
+//import ca.spottedleaf.moonrise.common.list.EntityList;
+//
+//public interface IMixinChunkEntitySlicesAccess {
+//    @SuppressWarnings("EmptyMethod")
+//    EntityList getEntities();
+//}

@@ -14,7 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.access;
 
-public interface IMixinIteratorSafeOrderedReferenceSetAccess {
-    @SuppressWarnings("EmptyMethod")
-    int getListSize();
-}
+//public interface IMixinIteratorSafeOrderedReferenceSetAccess {
+//    @SuppressWarnings("EmptyMethod")
+//    int getListSize();
+//}

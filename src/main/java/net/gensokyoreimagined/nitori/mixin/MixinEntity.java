@@ -39,7 +39,7 @@ public abstract class MixinEntity {
      * Implementation of 0065-some-entity-micro-opts.patch
      */
     @Unique
-    public float gensouHacks$getLightLevelDependentMagicValue(BlockPos pos) {
+    public float nitori$getLightLevelDependentMagicValue(BlockPos pos) {
         return this.level.hasChunkAt(this.getBlockX(), this.getBlockZ()) ? this.level.getLightLevelDependentMagicValue(pos) : 0.0F;
     }
 
@@ -48,7 +48,7 @@ public abstract class MixinEntity {
      */
     @Inject(method = "getLightLevelDependentMagicValue", at = @At("HEAD"), cancellable = true)
     private void getLightLevelDependentMagicValue(CallbackInfoReturnable<Float> cir) {
-        cir.setReturnValue(this.gensouHacks$getLightLevelDependentMagicValue(new BlockPos(this.getBlockX(), (int) this.getEyeY(), this.getBlockZ())));
+        cir.setReturnValue(this.nitori$getLightLevelDependentMagicValue(new BlockPos(this.getBlockX(), (int) this.getEyeY(), this.getBlockZ())));
         cir.cancel();
     }
 }

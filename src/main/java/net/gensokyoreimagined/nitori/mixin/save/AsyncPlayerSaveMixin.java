@@ -12,30 +12,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.gensokyoreimagined.nitori.mixin;
+package net.gensokyoreimagined.nitori.mixin.save;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.Util;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.PlayerDataStorage;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(Player.class)
-public abstract class MixinPlayer extends Entity {
-    public MixinPlayer(Level world) {
-        super(EntityType.PLAYER, world);
-    }
+import java.util.concurrent.CompletableFuture;
 
-    @Shadow public abstract void awardStat(ResourceLocation stat, int amount);
+@Mixin(PlayerList.class)
+public class AsyncPlayerSaveMixin {
+    @Final
+    @Shadow
+    public PlayerDataStorage playerIo;
 
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;awardStat(Lnet/minecraft/resources/ResourceLocation;)V"))
-    public void betterStatsTicking(Player instance, ResourceLocation stat) {
-        if (this.tickCount % 20 == 0) {
-            this.awardStat(stat, 20);
-        }
+    @Redirect(method = "save", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/PlayerDataStorage;save(Lnet/minecraft/world/entity/player/Player;)V"))
+    private void nitori$savePlayerData(PlayerDataStorage instance, Player player) {
+        Runnable writeRunnable = () -> playerIo.save(player);
+
+        var ioExecutor = Util.backgroundExecutor();
+        CompletableFuture.runAsync(writeRunnable, ioExecutor);
     }
 }

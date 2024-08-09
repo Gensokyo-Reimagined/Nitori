@@ -94,6 +94,11 @@ public class RandomGeneratorRandom implements BitRandomSource {
             return new RandomGeneratorRandom((long) seed.hashCode() ^ this.seed);
         }
 
+        @Override
+        public RandomSource fromSeed(long seed) {
+            return new RandomGeneratorRandom(seed ^ this.seed);
+        }
+
 		/*
 		@Override
 		public Random split(long seed) {

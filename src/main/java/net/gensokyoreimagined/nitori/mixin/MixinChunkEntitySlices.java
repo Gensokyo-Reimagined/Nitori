@@ -14,8 +14,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.mixin;
 
-import com.destroystokyo.paper.util.maplist.EntityList;
-import io.papermc.paper.world.ChunkEntitySlices;
+import ca.spottedleaf.moonrise.common.list.EntityList;
+import ca.spottedleaf.moonrise.patches.chunk_system.level.entity.ChunkEntitySlices;
 import net.gensokyoreimagined.nitori.access.IMixinChunkEntitySlicesAccess;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,18 +1,15 @@
-package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
+package net.gensokyoreimagined.nitori.mixin.needs_testing.util.block_tracking;
 
 //import net.gensokyoreimagined.nitori.common.block.*;
 //import net.gensokyoreimagined.nitori.common.entity.block_tracking.ChunkSectionChangeCallback;
 //import net.gensokyoreimagined.nitori.common.entity.block_tracking.SectionedBlockChangeTracker;
-//import net.minecraft.core.SectionPos;
-//import net.minecraft.network.FriendlyByteBuf;
-//import net.minecraft.world.level.Level;
 //import net.minecraft.world.level.block.state.BlockState;
+//import net.minecraft.network.FriendlyByteBuf;
+//import net.minecraft.core.SectionPos;
+//import net.minecraft.world.level.Level;
 //import net.minecraft.world.level.chunk.LevelChunkSection;
 //import net.minecraft.world.level.chunk.PalettedContainer;
-//import org.spongepowered.asm.mixin.Final;
-//import org.spongepowered.asm.mixin.Mixin;
-//import org.spongepowered.asm.mixin.Shadow;
-//import org.spongepowered.asm.mixin.Unique;
+//import org.spongepowered.asm.mixin.*;
 //import org.spongepowered.asm.mixin.injection.At;
 //import org.spongepowered.asm.mixin.injection.Inject;
 //import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,14 +30,14 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //    public PalettedContainer<BlockState> states;
 //
 //    @Unique
-//    private short[] nitori$countsByFlag = null;
+//    private short[] countsByFlag = null;
 //    @Unique
-//    private ChunkSectionChangeCallback nitori$changeListener;
+//    private ChunkSectionChangeCallback changeListener;
 //    @Unique
-//    private short nitori$listeningMask;
+//    private short listeningMask;
 //
 //    @Unique
-//    private static void nitori$addToFlagCount(short[] countsByFlag, BlockState state, short change) {
+//    private static void addToFlagCount(short[] countsByFlag, BlockState state, short change) {
 //        int flags = ((BlockStateFlagHolder) state).lithium$getAllFlags();
 //        int i;
 //        while ((i = Integer.numberOfTrailingZeros(flags)) < 32 && i < countsByFlag.length) {
@@ -52,27 +49,61 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //
 //    @Override
 //    public boolean lithium$mayContainAny(TrackedBlockStatePredicate trackedBlockStatePredicate) {
-//        if (this.nitori$countsByFlag == null) {
-//            nitori$fastInitClientCounts();
+//        if (this.countsByFlag == null) {
+//            fastInitClientCounts();
 //        }
-//        return this.nitori$countsByFlag[trackedBlockStatePredicate.getIndex()] != (short) 0;
+//        return this.countsByFlag[trackedBlockStatePredicate.getIndex()] != (short) 0;
 //    }
 //
 //    @Unique
-//    private void nitori$fastInitClientCounts() {
-//        this.nitori$countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
+//    private void fastInitClientCounts() {
+//        this.countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
 //        for (TrackedBlockStatePredicate trackedBlockStatePredicate : BlockStateFlags.TRACKED_FLAGS) {
 //            if (this.states.maybeHas(trackedBlockStatePredicate)) {
 //                //We haven't counted, so we just set the count so high that it never incorrectly reaches 0.
 //                //For most situations, this overestimation does not hurt client performance compared to correct counting,
-//                this.nitori$countsByFlag[trackedBlockStatePredicate.getIndex()] = 16 * 16 * 16;
+//                this.countsByFlag[trackedBlockStatePredicate.getIndex()] = 16 * 16 * 16;
 //            }
 //        }
 //    }
 //
-//    @Inject(method = "recalcBlockCounts()V", at = @At("HEAD"))
-//    private void createFlagCounters(CallbackInfo ci) {
-//        this.nitori$countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
+////    @Redirect(
+////            method = "recalcBlockCounts()V",
+////            at = @At(
+////                    value = "INVOKE",
+////                    target = "Lnet/minecraft/world/chunk/PalettedContainer;count(Lnet/minecraft/world/chunk/PalettedContainer$Counter;)V"
+////            )
+////    )
+////    private void initFlagCounters(PalettedContainer<BlockState> palettedContainer, PalettedContainer.Counter<BlockState> consumer) {
+////        palettedContainer.count((state, count) -> {
+////            consumer.accept(state, count);
+////            addToFlagCount(this.countsByFlag, state, (short) count);
+////        });
+////    }
+//    @Shadow
+//    short nonEmptyBlockCount;
+//    @Shadow
+//    private short tickingBlockCount;
+//    @Shadow
+//    private short tickingFluidCount;
+//
+//    /**
+//     * @author DoggySazHi
+//     * @reason Replace the Paper implementation with Mojang + Lithium implementation
+//     */
+//    @Overwrite
+//    public void recalcBlockCounts() {
+//        this.countsByFlag = new short[BlockStateFlags.NUM_TRACKED_FLAGS];
+//
+//        BlockStateCounter lv = new BlockStateCounter();
+//        this.states.count((state, count) -> {
+//            lv.accept(state, count);
+//            addToFlagCount(this.countsByFlag, state, (short) count);
+//        });
+//
+//        this.nonEmptyBlockCount = (short)lv.nonEmptyBlockCount;
+//        this.tickingBlockCount = (short)lv.randomTickableBlockCount;
+//        this.tickingFluidCount = (short)lv.nonEmptyFluidCount;
 //    }
 //
 //    @Inject(
@@ -80,7 +111,7 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //            at = @At(value = "HEAD")
 //    )
 //    private void resetData(FriendlyByteBuf buf, CallbackInfo ci) {
-//        this.nitori$countsByFlag = null;
+//        this.countsByFlag = null;
 //    }
 //
 //    @Inject(
@@ -99,7 +130,7 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //
 //    @Override
 //    public void lithium$trackBlockStateChange(BlockState newState, BlockState oldState) {
-//        short[] countsByFlag = this.nitori$countsByFlag;
+//        short[] countsByFlag = this.countsByFlag;
 //        if (countsByFlag == null) {
 //            return;
 //        }
@@ -112,7 +143,7 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //        //blocks that are different according to the predicate (XOR). For XOR, the block counting needs to be updated
 //        //as well.
 //        int iterateFlags = (~BlockStateFlags.LISTENING_MASK_OR & flagsXOR) |
-//                (BlockStateFlags.LISTENING_MASK_OR & this.nitori$listeningMask & (prevFlags | flags));
+//                (BlockStateFlags.LISTENING_MASK_OR & this.listeningMask & (prevFlags | flags));
 //        int flagIndex;
 //
 //        while ((flagIndex = Integer.numberOfTrailingZeros(iterateFlags)) < 32 && flagIndex < countsByFlag.length) {
@@ -121,8 +152,8 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //            if ((flagsXOR & flagBit) != 0) {
 //                countsByFlag[flagIndex] += (short) (1 - (((prevFlags >>> flagIndex) & 1) << 1));
 //            }
-//            if ((this.nitori$listeningMask & flagBit) != 0) {
-//                this.nitori$listeningMask = this.nitori$changeListener.onBlockChange(flagIndex, this);
+//            if ((this.listeningMask & flagBit) != 0) {
+//                this.listeningMask = this.changeListener.onBlockChange(flagIndex, this);
 //            }
 //            iterateFlags &= ~flagBit;
 //        }
@@ -130,29 +161,29 @@ package net.gensokyoreimagined.nitori.mixin.util.block_tracking;
 //
 //    @Override
 //    public void lithium$addToCallback(ListeningBlockStatePredicate blockGroup, SectionedBlockChangeTracker tracker, long sectionPos, Level world) {
-//        if (this.nitori$changeListener == null) {
+//        if (this.changeListener == null) {
 //            if (sectionPos == Long.MIN_VALUE || world == null) {
 //                throw new IllegalArgumentException("Expected world and section pos during intialization!");
 //            }
-//            this.nitori$changeListener = ChunkSectionChangeCallback.create(sectionPos, world);
+//            this.changeListener = ChunkSectionChangeCallback.create(sectionPos, world);
 //        }
 //
-//        this.nitori$listeningMask = this.nitori$changeListener.addTracker(tracker, blockGroup);
+//        this.listeningMask = this.changeListener.addTracker(tracker, blockGroup);
 //    }
 //
 //    @Override
 //    public void lithium$removeFromCallback(ListeningBlockStatePredicate blockGroup, SectionedBlockChangeTracker tracker) {
-//        if (this.nitori$changeListener != null) {
-//            this.nitori$listeningMask = this.nitori$changeListener.removeTracker(tracker, blockGroup);
+//        if (this.changeListener != null) {
+//            this.listeningMask = this.changeListener.removeTracker(tracker, blockGroup);
 //        }
 //    }
 //
 //    @Override
 //    @Unique
 //    public void lithium$invalidateListeningSection(SectionPos sectionPos) {
-//        if (this.nitori$listeningMask != 0) {
-//            this.nitori$changeListener.onChunkSectionInvalidated(sectionPos);
-//            this.nitori$listeningMask = 0;
+//        if (this.listeningMask != 0) {
+//            this.changeListener.onChunkSectionInvalidated(sectionPos);
+//            this.listeningMask = 0;
 //        }
 //    }
 //}

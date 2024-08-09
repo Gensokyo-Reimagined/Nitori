@@ -14,6 +14,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.gensokyoreimagined.nitori.access;
 
-public interface IMixinChunkMapAccess {
-    void gensouHacks$runOnTrackerMainThread(final Runnable runnable);
-}
+//public interface IMixinChunkMapAccess {
+//    void gensouHacks$runOnTrackerMainThread(final Runnable runnable);
+//}

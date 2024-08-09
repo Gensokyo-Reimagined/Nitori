@@ -4,7 +4,7 @@ package net.gensokyoreimagined.nitori.common.world.chunk;
 //import it.unimi.dsi.fastutil.HashCommon;
 //import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 //import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-//import net.gensokyoreimagined.nitori.mixin.needs_testing.chunk.palette.PaletteResizeAccessor;
+//import net.gensokyoreimagined.nitori.mixin.removed.palette.PaletteResizeAccessor;
 //import net.minecraft.network.FriendlyByteBuf;
 //import net.minecraft.network.VarInt;
 //import net.minecraft.core.IdMap;

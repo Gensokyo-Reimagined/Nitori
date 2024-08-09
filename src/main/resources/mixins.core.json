@@ -46,8 +46,6 @@
     "logic.fast_bits_blockpos.OptimizedBlockPosBitsMixin",
     "logic.fast_rotations.EulerAngleMixin",
     "logic.reduce_ray_casting.BlockViewCastingMixin",
-    "math.fast_blockops.BlockPosMixin",
-    "math.fast_blockops.DirectionMixin",
     "math.fast_util.AxisCycleDirectionMixin$BackwardMixin",
     "math.fast_util.AxisCycleDirectionMixin$ForwardMixin",
     "math.fast_util.DirectionMixin",

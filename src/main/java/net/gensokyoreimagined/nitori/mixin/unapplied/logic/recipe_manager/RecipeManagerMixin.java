@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.logic.recipe_manager;
+package net.gensokyoreimagined.nitori.mixin.unapplied.logic.recipe_manager;
 
 //import net.minecraft.world.Container;
 //import net.minecraft.world.item.crafting.Recipe;

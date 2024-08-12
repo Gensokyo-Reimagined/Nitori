@@ -1,6 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.logic.fast_bits_blockpos;
-
-//TODO: impl this
+package net.gensokyoreimagined.nitori.mixin.removed.logic.fast_bits_blockpos;
 
 //import net.minecraft.core.BlockPos;
 //import net.minecraft.world.level.ChunkPos;

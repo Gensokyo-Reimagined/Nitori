@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.unapplied.alloc.chunk_random;
+package net.gensokyoreimagined.nitori.mixin.removed.alloc.chunk_random;
 
 //import net.gensokyoreimagined.nitori.common.world.ChunkRandomSource;
 //import net.minecraft.world.level.block.state.BlockState;

@@ -1,8 +1,5 @@
 package net.gensokyoreimagined.nitori.mixin.removed.world.tick_scheduler;
 
-//TODO: Make this work with paper
-
-
 //import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 //import it.unimi.dsi.fastutil.longs.Long2ReferenceAVLTreeMap;
 //import it.unimi.dsi.fastutil.objects.ObjectIterator;

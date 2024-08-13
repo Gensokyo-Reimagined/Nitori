@@ -1,33 +1,29 @@
-package net.gensokyoreimagined.nitori.mixin.world.block_entity_ticking.sleeping.campfire;
+package net.gensokyoreimagined.nitori.mixin.world.block_entity_ticking.sleeping.shulker_box;
 
 import net.gensokyoreimagined.nitori.common.block.entity.SleepingBlockEntity;
 import net.gensokyoreimagined.nitori.mixin.world.block_entity_ticking.sleeping.WrappedBlockEntityTickInvokerAccessor;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.CampfireBlockEntity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CampfireBlockEntity.class)
-public class CampfireBlockEntityMixin extends BlockEntity implements SleepingBlockEntity {
-
+@Mixin(ShulkerBoxBlockEntity.class)
+public class ShulkerBoxBlockEntityMixin implements SleepingBlockEntity {
+    @Shadow
+    private ShulkerBoxBlockEntity.AnimationStatus animationStatus;
+    @Shadow
+    private float progress;
+    @Shadow
+    private float progressOld;
     private WrappedBlockEntityTickInvokerAccessor tickWrapper = null;
     private TickingBlockEntity sleepingTicker = null;
-
-    public CampfireBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
-    }
 
     @Override
     public WrappedBlockEntityTickInvokerAccessor lithium$getTickWrapper() {
@@ -37,7 +33,6 @@ public class CampfireBlockEntityMixin extends BlockEntity implements SleepingBlo
     @Override
     public void lithium$setTickWrapper(WrappedBlockEntityTickInvokerAccessor tickWrapper) {
         this.tickWrapper = tickWrapper;
-        this.lithium$setSleepingTicker(null);
     }
 
     @Override
@@ -50,20 +45,23 @@ public class CampfireBlockEntityMixin extends BlockEntity implements SleepingBlo
         this.sleepingTicker = sleepingTicker;
     }
 
-
     @Inject(
-            method = "placeFood",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/core/NonNullList;set(ILjava/lang/Object;)Ljava/lang/Object;")
+            method = "triggerEvent",
+            at = @At("HEAD")
     )
-    private void wakeUpOnAddItem(LivingEntity user, ItemStack stack, int cookTime, CallbackInfoReturnable<Boolean> cir) {
-        this.wakeUpNow();
+    private void wakeUpOnSyncedBlockEvent(int type, int data, CallbackInfoReturnable<Boolean> cir) {
+        if (this.sleepingTicker != null) {
+            this.wakeUpNow();
+        }
     }
 
     @Inject(
-            method = "loadAdditional",
+            method = "updateAnimation",
             at = @At(value = "RETURN")
     )
-    private void wakeUpOnReadNbt(CompoundTag nbt, HolderLookup.Provider registryLookup, CallbackInfo ci) {
-        this.wakeUpNow();
+    private void sleepOnAnimationEnd(Level world, BlockPos pos, BlockState state, CallbackInfo ci) {
+        if (this.animationStatus == animationStatus.CLOSED && this.progressOld == 0.0f && this.progress == 0.0f) {
+            this.nitori$startSleeping();
+        }
     }
 }

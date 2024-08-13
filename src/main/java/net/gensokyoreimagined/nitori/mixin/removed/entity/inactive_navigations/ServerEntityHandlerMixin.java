@@ -1,4 +1,4 @@
-package net.gensokyoreimagined.nitori.mixin.entity.inactive_navigations;
+package net.gensokyoreimagined.nitori.mixin.removed.entity.inactive_navigations;
 
 //import net.gensokyoreimagined.nitori.common.entity.NavigatingEntity;
 //import net.gensokyoreimagined.nitori.common.world.ServerWorldExtended;

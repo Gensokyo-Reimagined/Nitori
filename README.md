@@ -1,6 +1,9 @@
 # Nitori
 A performance mod that converts patches into mixins using the Ignite Framework for Paper/Spigot.
 
+> [!CAUTION]
+> Nitori is more or less depraced to use [Leaf](https://github.com/Winds-Studio/Leaf) in it's replacement for performance orianted features.
+
 ## Optimizations:
 This plugin provides the following optimizations:
 - Faster Entity tracker by utilizing **Multiple Cores** this will allow larger servers to have way more entities
